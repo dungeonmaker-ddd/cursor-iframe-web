@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微前端主应用</title>
+    <!-- 预加载Tailwind -->
+    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+    <!-- 基础样式 -->
+    <style>
+        .loading {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .loaded {
+            opacity: 1;
+        }
+        /* 允许iframe继承样式 */
+        iframe {
+            background-color: transparent;
+        }
+        /* 主应用样式 */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .app-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* 防止flex子元素溢出 */
+        }
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* 防止flex子元素溢出 */
+        }
+        .content-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* 防止flex子元素溢出 */
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        #subapp {
+            flex: 1;
+            width: 100%;
+            border: none;
+            min-height: 0; /* 防止flex子元素溢出 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载指示器 -->
+    <div id="loading" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+    </div>
+
+    <div id="app" class="bg-gray-100 p-5 loading">
+        <div class="app-container max-w-6xl mx-auto w-full">
+            <header class="bg-white p-8 rounded-lg shadow-sm mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-4">微前端主应用</h1>
+                <nav class="space-x-4">
+                    <button 
+                        data-app="app1"
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors">
+                        子应用1
+                    </button>
+                    <button 
+                        data-app="app2"
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors">
+                        子应用2
+                    </button>
+                </nav>
+            </header>
+            
+            <main>
+                <section class="content-section">
+                    <iframe id="subapp" src="sub-apps/app1.html"></iframe>
+                </section>
+            </main>
+
+            <footer class="text-center py-8 mt-8 text-gray-600 border-t border-gray-200">
+                <p>&copy; 2024 微前端示例. All rights reserved.</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- 加载Tailwind并确保在iframe中可用 -->
+    <script>
+        // 加载Tailwind
+        const loadTailwind = async () => {
+            await new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.tailwindcss.com';
+                script.onload = resolve;
+                document.head.appendChild(script);
+            });
+            document.body.classList.add('loaded');
+            
+            // 向所有iframe广播Tailwind已加载的消息
+            const broadcastTailwindLoaded = () => {
+                const iframes = document.querySelectorAll('iframe');
+                iframes.forEach(iframe => {
+                    iframe.contentWindow.postMessage({ type: 'tailwindLoaded' }, '*');
+                });
+            };
+            
+            // 初次广播
+            broadcastTailwindLoaded();
+            
+            // 监听iframe加载完成事件，确保新加载的iframe也能收到消息
+            document.querySelectorAll('iframe').forEach(iframe => {
+                iframe.addEventListener('load', () => {
+                    iframe.contentWindow.postMessage({ type: 'tailwindLoaded' }, '*');
+                });
+            });
+        };
+
+        // 启动加载
+        loadTailwind();
+    </script>
+
+    <!-- 应用逻辑 -->
+    <script>
+        // main.js 的代码
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('网页已完全加载');
+            
+            // 为标题添加点击事件
+            const mainTitle = document.querySelector('h1');
+            if (mainTitle) {
+                mainTitle.addEventListener('click', function() {
+                    alert('欢迎使用这个模板！');
+                });
+            }
+        });
+
+        window.addEventListener('load', function() {
+            const app = document.getElementById('app');
+            const loading = document.getElementById('loading');
+            
+            // 显示主应用内容
+            app.classList.add('loaded');
+            loading.style.display = 'none';
+
+            // 应用切换逻辑
+            document.querySelectorAll('button[data-app]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const appName = this.dataset.app;
+                    const iframe = document.getElementById('subapp');
+                    
+                    // 切换应用前添加过渡效果
+                    iframe.style.opacity = '0';
+                    iframe.style.transition = 'opacity 0.3s ease';
+                    
+                    setTimeout(() => {
+                        iframe.src = `sub-apps/${appName}.html`;
+                        iframe.style.opacity = '1';
+                    }, 300);
+
+                    // 更新按钮状态
+                    document.querySelectorAll('button[data-app]').forEach(btn => {
+                        btn.classList.remove('bg-blue-600');
+                        btn.classList.add('bg-blue-500');
+                    });
+                    this.classList.remove('bg-blue-500');
+                    this.classList.add('bg-blue-600');
+                });
+            });
+
+            // 监听子应用消息
+            window.addEventListener('message', function(event) {
+                const data = event.data;
+                
+                // 处理按钮点击事件
+                if (data === 'buttonClicked') {
+                    const currentApp = document.querySelector('.nav-button.active');
+                    const appName = currentApp ? currentApp.textContent.trim() : '未知应用';
+                    console.log(`${appName}中的按钮被点击了`);
+                    
+                    // 可以在这里添加更多的按钮点击处理逻辑
+                    const button = document.querySelector('.nav-button.active');
+                    if (button) {
+                        // 添加点击反馈动画
+                        button.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            button.style.transform = '';
+                        }, 200);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

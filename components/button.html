@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: fit-content;
+        }
+    </style>
+</head>
+<body>
+    <button 
+        class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-2 rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <span>点击按钮</span>
+    </button>
+
+    <script>
+        // 向父窗口发送点击事件
+        document.querySelector('button').addEventListener('click', function() {
+            window.parent.postMessage('buttonClicked', '*');
+        });
+
+        // 监听DOM变化，报告实际高度
+        const reportHeight = () => {
+            const height = document.body.offsetHeight;
+            window.parent.postMessage({
+                type: 'buttonHeight',
+                height: height
+            }, '*');
+        };
+
+        // 创建Mutation Observer监听DOM变化
+        const observer = new MutationObserver(reportHeight);
+        observer.observe(document.body, {
+            attributes: true,
+            childList: true,
+            subtree: true
+        });
+
+        // 页面加载完成后报告初始高度
+        window.addEventListener('load', reportHeight);
+        // 也在DOMContentLoaded时报告一次
+        document.addEventListener('DOMContentLoaded', reportHeight);
+        // 字体加载完成后也报告一次
+        document.fonts.ready.then(reportHeight);
+    </script>
+</body>
+</html> 

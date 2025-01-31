@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 1.25rem;
+            background: linear-gradient(to bottom right, #f3f4f6, #e5e7eb);
+        }
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-header {
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            padding: 1.5rem;
+            color: white;
+        }
+        .card-content {
+            padding: 1.5rem;
+            flex: 1;
+            overflow: auto;
+        }
+        .card-footer {
+            border-top: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            background: #f9fafb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: fit-content;
+        }
+        .footer-right {
+            display: flex;
+            align-items: center;
+            min-height: fit-content;
+        }
+        .footer-right iframe {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h1 id="cardTitle" class="text-2xl font-bold"></h1>
+            <p id="cardSubtitle" class="text-blue-100 mt-2"></p>
+        </div>
+        
+        <div class="card-content">
+            <div id="cardContent"></div>
+        </div>
+        
+        <div class="card-footer">
+            <div id="footerLeft"></div>
+            <div id="footerRight" class="footer-right"></div>
+        </div>
+    </div>
+
+    <script>
+        // 接收来自父窗口的消息来更新内容
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            
+            // 如果是按钮点击事件，转发给父窗口
+            if (data === 'buttonClicked') {
+                window.parent.postMessage('buttonClicked', '*');
+                return;
+            }
+            
+            if (data.type === 'updateCard') {
+                // 更新标题和副标题
+                document.getElementById('cardTitle').textContent = data.title || '';
+                document.getElementById('cardSubtitle').textContent = data.subtitle || '';
+                
+                // 更新主要内容
+                if (data.content) {
+                    document.getElementById('cardContent').innerHTML = data.content;
+                }
+                
+                // 更新底部内容
+                if (data.footerLeft) {
+                    document.getElementById('footerLeft').innerHTML = data.footerLeft;
+                }
+                if (data.footerRight) {
+                    document.getElementById('footerRight').innerHTML = data.footerRight;
+                }
+            }
+            // 处理按钮高度更新
+            else if (data.type === 'buttonHeight') {
+                const footerRight = document.getElementById('footerRight');
+                const iframe = footerRight.querySelector('iframe');
+                if (iframe) {
+                    iframe.style.height = `${data.height}px`;
+                    // 确保footer的高度足够
+                    document.querySelector('.card-footer').style.minHeight = `${data.height + 48}px`; // 添加padding
+                }
+            }
+        });
+
+        // 通知父窗口组件已准备就绪
+        window.parent.postMessage({ type: 'cardLayoutReady' }, '*');
+    </script>
+</body>
+</html> 

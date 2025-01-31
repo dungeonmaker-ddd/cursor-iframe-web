@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>子应用2</title>
+    <!-- 基础样式 -->
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #fff5f7; /* bg-pink-50 的颜色值 */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .loading {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .loaded {
+            opacity: 1;
+        }
+        /* iframe容器样式 */
+        #app {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0.75rem;
+            min-height: 0;
+            transition: padding 0.3s ease;
+        }
+        @media (min-width: 640px) {
+            #app {
+                padding: 1rem;
+            }
+        }
+        @media (min-width: 768px) {
+            #app {
+                padding: 1.25rem;
+            }
+        }
+        /* iframe样式 */
+        #cardLayout {
+            flex: 1;
+            width: 100%;
+            border: none;
+            min-height: 0; /* 防止flex子元素溢出 */
+            transition: all 0.3s ease;
+        }
+        /* 加载指示器样式 */
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        .loading-spinner {
+            width: 2.5rem;
+            height: 2.5rem;
+            border: 2px solid #e5e7eb;
+            border-top-color: #ec4899;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        /* 内容响应式样式 */
+        .content-container {
+            width: 100%;
+            max-width: 768px;
+            margin: 0 auto;
+        }
+        .content-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            width: 100%;
+        }
+        @media (min-width: 640px) {
+            .content-card {
+                padding: 1.25rem;
+                margin-bottom: 1.25rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .content-card {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+        .content-card:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .card-icon {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            margin-right: 0.75rem;
+            color: #ec4899;
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            flex: 1;
+            min-width: 0;
+        }
+        @media (min-width: 640px) {
+            .card-icon {
+                width: 28px;
+                height: 28px;
+                min-width: 28px;
+                margin-right: 1rem;
+            }
+            .card-title {
+                font-size: 1.125rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .card-icon {
+                width: 32px;
+                height: 32px;
+                min-width: 32px;
+            }
+            .card-title {
+                font-size: 1.25rem;
+            }
+        }
+        .card-content {
+            font-size: 0.875rem;
+            color: #6b7280;
+            line-height: 1.25rem;
+            padding-left: calc(24px + 0.75rem);
+        }
+        @media (min-width: 640px) {
+            .card-content {
+                font-size: 1rem;
+                line-height: 1.5rem;
+                padding-left: calc(28px + 1rem);
+            }
+        }
+        @media (min-width: 768px) {
+            .card-content {
+                padding-left: calc(32px + 1rem);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载指示器 -->
+    <div id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div id="app" class="loading">
+        <!-- 卡片布局组件 -->
+        <iframe id="cardLayout" src="../components/card-layout.html"></iframe>
+    </div>
+
+    <!-- 应用逻辑 -->
+    <script>
+        // 准备卡片内容
+        const cardContent = `
+            <div class="content-container">
+                <div class="content-card">
+                    <div class="card-header">
+                        <svg class="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                        </svg>
+                        <h3 class="card-title">特点</h3>
+                    </div>
+                    <p class="card-content">不同的样式主题</p>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-header">
+                        <svg class="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        <h3 class="card-title">优势</h3>
+                    </div>
+                    <p class="card-content">完全隔离的运行环境</p>
+                </div>
+            </div>
+        `;
+
+        // 监听来自主应用的消息
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            
+            // 如果是按钮点击事件，转发给父窗口
+            if (data === 'buttonClicked') {
+                window.parent.postMessage('buttonClicked', '*');
+                return;
+            }
+            
+            if (data.type === 'tailwindLoaded') {
+                const app = document.getElementById('app');
+                const loading = document.getElementById('loading');
+                
+                // 显示应用内容
+                app.classList.add('loaded');
+                loading.style.display = 'none';
+            }
+
+            // 监听窗口大小变化
+            if (data.type === 'windowResize') {
+                // 可以在这里处理响应式逻辑
+                console.log('Window resized:', data.width, data.height);
+            }
+            
+            // 监听卡片布局组件就绪
+            if (data.type === 'cardLayoutReady') {
+                // 更新卡片内容
+                const iframe = document.getElementById('cardLayout');
+                iframe.contentWindow.postMessage({
+                    type: 'updateCard',
+                    title: '子应用2',
+                    subtitle: '这是独立的子应用2内容',
+                    content: cardContent,
+                    footerLeft: '<span class="text-gray-500 inline-block min-w-[120px]">最后更新: 2024</span>',
+                    footerRight: '<iframe src="../components/button.html" style="width:180px;height:40px;border:0;overflow:hidden"></iframe>'
+                }, '*');
+            }
+        });
+    </script>
+</body>
+</html> 
