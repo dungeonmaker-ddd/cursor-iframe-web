@@ -1,184 +1,955 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cursor Web 应用</title>
-    
-    <!-- Tailwind CSS CDN -->
+    <title>编程作品集 | Portfolio</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👨‍💻</text></svg>">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Iconify CDN -->
+    <!-- Iconify -->
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    
-    <!-- 引入样式文件 -->
-    <link rel="stylesheet" href="styles/main.css">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#3b82f6',
-                        secondary: '#64748b'
-                    }
-                }
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease-in-out;
+            backdrop-filter: blur(8px);
+            background-color: transparent;
+        }
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+        .sidebar-item {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .sidebar-item::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            width: 0.5rem;
+            height: 1px;
+            background-color: #94a3b8;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .sidebar-item:hover::before {
+            opacity: 1;
+            width: 1rem;
+        }
+        .sidebar-submenu {
+            margin-left: 1rem;
+            border-left: 1px dashed #94a3b8;
+            padding-left: 1rem;
+        }
+        @media (min-width: 1024px) {
+            .main-content {
+                width: 100vw;
+                margin-left: 0;
             }
         }
-
-        // 显示错误信息
-        function showError(message) {
-            const container = document.getElementById('sub-app-container');
-            container.innerHTML = `
-                <div class="flex flex-col items-center justify-center text-center">
-                    <iconify-icon icon="material-symbols:error" class="text-red-500 text-4xl mb-4"></iconify-icon>
-                    <h2 class="text-xl font-semibold text-red-500 mb-2">加载失败</h2>
-                    <p class="text-gray-600">${message}</p>
-                    <button onclick="window.location.reload()" class="mt-4 btn btn-primary">
-                        重试
-                    </button>
-                </div>
-            `;
+        .floating-button {
+            transition: all 0.3s ease;
         }
-
-        // 显示加载状态
-        function showLoading() {
-            const container = document.getElementById('sub-app-container');
-            container.innerHTML = `
-                <div class="flex flex-col items-center justify-center text-center">
-                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent mb-4"></div>
-                    <p class="text-gray-600">正在加载应用...</p>
-                </div>
-            `;
+        .floating-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
-
-        // 子应用加载函数
-        async function loadSubApp(appPath) {
-            showLoading();
-            try {
-                // 检查是否在本地文件系统中运行
-                if (window.location.protocol === 'file:') {
-                    throw new Error('请使用HTTP服务器运行此应用。\n您可以使用以下命令启动本地服务器：\npython -m http.server 3000\n然后访问 http://localhost:3000');
-                }
-
-                const response = await fetch(appPath);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const html = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const content = doc.querySelector('main').innerHTML;
-                document.getElementById('sub-app-container').innerHTML = content;
-            } catch (error) {
-                console.error('加载子应用失败:', error);
-                showError(error.message);
+        .ascii-art {
+            font-family: monospace;
+            white-space: pre;
+            font-size: 12px;
+            line-height: 1;
+            color: #1e40af;
+            opacity: 0.1;
+            user-select: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 0;
+            transform: rotate(-10deg);
+        }
+        .page-section {
+            min-height: 100vh;
+            height: 100vh;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+        .scroll-container {
+            scroll-snap-type: y mandatory;
+            height: 100vh;
+            width: 100vw;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            position: relative;
+            perspective: 1px;
+            transform-style: preserve-3d;
+            -webkit-overflow-scrolling: touch;
+        }
+        .scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .scroll-container::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .section-content {
+            min-height: 100vh;
+            padding-top: 0;
+            position: relative;
+            z-index: 1;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+        .section-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+        }
+        @media (prefers-color-scheme: dark) {
+            .ascii-art {
+                color: #60a5fa;
             }
         }
-
-        // 同时加载两个子应用
-        async function loadBothApps() {
-            const container = document.getElementById('sub-app-container');
-            container.innerHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <div id="demo-container" class="min-h-[300px]">
-                        <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent mb-4 mx-auto"></div>
-                        <p class="text-gray-600 text-center">正在加载Demo应用...</p>
-                    </div>
-                    <div id="app2-container" class="min-h-[300px]">
-                        <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent mb-4 mx-auto"></div>
-                        <p class="text-gray-600 text-center">正在加载App2应用...</p>
-                    </div>
-                </div>
-            `;
-
-            try {
-                if (window.location.protocol === 'file:') {
-                    throw new Error('请使用HTTP服务器运行此应用');
-                }
-
-                const loadApp = async (appPath, containerId) => {
-                    const response = await fetch(appPath);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const html = await response.text();
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const content = doc.querySelector('main').innerHTML;
-                    document.getElementById(containerId).innerHTML = content;
-                };
-
-                await Promise.all([
-                    loadApp('apps/demo/index.html', 'demo-container'),
-                    loadApp('apps/app2/index.html', 'app2-container')
-                ]);
-            } catch (error) {
-                console.error('加载应用失败:', error);
-                showError(error.message);
-            }
+        .header-expanded {
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
         }
-    </script>
+        .header-content {
+            height: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .header-expanded .header-content {
+            height: calc(100vh - 4rem);
+        }
+        .nav-link {
+            position: relative;
+            display: inline-block;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: currentColor;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        #main-header {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 9999px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        #main-header:hover {
+            width: min(90vw, 40rem);
+            height: 2.5rem;
+            border-radius: 1.25rem;
+        }
+        .header-trigger {
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: 2;
+        }
+        .header-content {
+            position: absolute;
+            top: 0;
+            right: 2.5rem;
+            height: 100%;
+            padding: 0 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        #main-header:hover .header-content {
+            opacity: 1;
+            visibility: visible;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .nav-link {
+            color: white;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            transform: translateX(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .nav-link iconify-icon {
+            margin-right: 0.5rem;
+            font-size: 1.25rem;
+        }
+        #main-header:hover .nav-link {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        #main-header:hover .nav-link:nth-child(1) { transition-delay: 0.1s; }
+        #main-header:hover .nav-link:nth-child(2) { transition-delay: 0.15s; }
+        #main-header:hover .nav-link:nth-child(3) { transition-delay: 0.2s; }
+        #main-header:hover .nav-link:nth-child(4) { transition-delay: 0.25s; }
+        #main-header:hover .nav-link:nth-child(5) { transition-delay: 0.3s; }
+        .nav-divider {
+            width: 1px;
+            height: 1rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin: 0 0.5rem;
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
-    <div class="min-h-screen flex flex-col">
-        <!-- 顶部导航 -->
-        <nav class="bg-white shadow-sm">
-            <div class="container mx-auto px-4 py-3">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <iconify-icon icon="logos:cursor" width="24"></iconify-icon>
-                        <span class="text-lg font-semibold">Cursor Web</span>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <button onclick="loadSubApp('apps/demo/index.html')" class="btn btn-primary">
-                            加载Demo应用
-                        </button>
-                        <button onclick="loadSubApp('apps/app2/index.html')" class="btn btn-primary">
-                            加载App2应用
-                        </button>
-                        <button onclick="loadBothApps()" class="btn btn-secondary">
-                            同时加载
-                        </button>
-                    </div>
+    <!-- ASCII艺术装饰 -->
+    <div class="ascii-art" aria-hidden="true">
+        // ... existing ascii art ...
+    </div>
+
+    <!-- 顶部导航栏 -->
+    <header id="main-header" class="z-50">
+        <div class="header-trigger">
+            <iconify-icon icon="carbon:menu" width="20" id="menu-icon"></iconify-icon>
+        </div>
+
+        <div class="header-content">
+            <nav class="nav-links">
+                <a href="#home" class="nav-link text-sm font-medium hover:text-blue-400">
+                    <iconify-icon icon="carbon:home"></iconify-icon>
+                    首页
+                </a>
+                <div class="nav-divider"></div>
+                <a href="#languages" class="nav-link text-sm font-medium hover:text-blue-400">
+                    <iconify-icon icon="carbon:code"></iconify-icon>
+                    技术栈
+                </a>
+                <div class="nav-divider"></div>
+                <a href="#projects" class="nav-link text-sm font-medium hover:text-blue-400">
+                    <iconify-icon icon="carbon:portfolio"></iconify-icon>
+                    作品
+                </a>
+                <div class="nav-divider"></div>
+                <a href="#blog" class="nav-link text-sm font-medium hover:text-blue-400">
+                    <iconify-icon icon="carbon:blog"></iconify-icon>
+                    博客
+                </a>
+                <div class="nav-divider"></div>
+                <a href="#about" class="nav-link text-sm font-medium hover:text-blue-400">
+                    <iconify-icon icon="carbon:user"></iconify-icon>
+                    关于
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 侧边栏 -->
+    <aside class="sidebar fixed top-0 left-0 h-full w-64 z-40 lg:translate-x-0">
+        <!-- 侧边栏头部 -->
+        <div class="h-16 px-4 flex items-center border-b border-gray-200/30">
+            <iconify-icon icon="carbon:code" width="32" class="text-blue-600"></iconify-icon>
+            <span class="text-xl font-bold ml-2">导航菜单</span>
+        </div>
+        
+        <!-- 侧边栏菜单 -->
+        <nav class="p-4 space-y-4">
+            <!-- 首页 -->
+            <div class="sidebar-item">
+                <a href="#home" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                    <iconify-icon icon="carbon:home" width="20"></iconify-icon>
+                    <span>首页</span>
+                </a>
+            </div>
+
+            <!-- 技术栈 -->
+            <div class="sidebar-item">
+                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
+                    <iconify-icon icon="carbon:skill-level" width="20"></iconify-icon>
+                    <span>技术栈</span>
                 </div>
+                <div class="sidebar-submenu mt-2 space-y-2">
+                    <a href="#languages" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="logos:python" width="16"></iconify-icon>
+                        <span class="text-sm">Python</span>
+                    </a>
+                    <a href="#languages" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="logos:javascript" width="16"></iconify-icon>
+                        <span class="text-sm">JavaScript</span>
+                    </a>
+                    <a href="#languages" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="logos:java" width="16"></iconify-icon>
+                        <span class="text-sm">Java</span>
+                    </a>
+                    <a href="#languages" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="logos:go" width="16"></iconify-icon>
+                        <span class="text-sm">Go</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 作品展示 -->
+            <div class="sidebar-item">
+                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
+                    <iconify-icon icon="carbon:portfolio" width="20"></iconify-icon>
+                    <span>作品展示</span>
+                </div>
+                <div class="sidebar-submenu mt-2 space-y-2">
+                    <a href="#projects" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="carbon:application" width="16"></iconify-icon>
+                        <span class="text-sm">应用项目</span>
+                    </a>
+                    <a href="#projects" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="carbon:cloud" width="16"></iconify-icon>
+                        <span class="text-sm">云服务</span>
+                    </a>
+                    <a href="#projects" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="carbon:tool-kit" width="16"></iconify-icon>
+                        <span class="text-sm">工具库</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 技术博客 -->
+            <div class="sidebar-item">
+                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
+                    <iconify-icon icon="carbon:blog" width="20"></iconify-icon>
+                    <span>技术博客</span>
+                </div>
+                <div class="sidebar-submenu mt-2 space-y-2">
+                    <a href="#blog" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="carbon:article" width="16"></iconify-icon>
+                        <span class="text-sm">技术文章</span>
+                    </a>
+                    <a href="#blog" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="carbon:notebook" width="16"></iconify-icon>
+                        <span class="text-sm">学习笔记</span>
+                    </a>
+                    <a href="#blog" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="carbon:idea" width="16"></iconify-icon>
+                        <span class="text-sm">心得体会</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 关于我 -->
+            <div class="sidebar-item">
+                <a href="#about" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                    <iconify-icon icon="carbon:user-profile" width="20"></iconify-icon>
+                    <span>关于我</span>
+                </a>
             </div>
         </nav>
-
-        <!-- 子应用容器 -->
-        <main id="sub-app-container" class="flex-1 container mx-auto px-4 py-8">
-            <div class="text-center">
-                <h1 class="text-4xl font-bold text-primary mb-6 flex items-center justify-center">
-                    <iconify-icon icon="twemoji:waving-hand" class="mr-4"></iconify-icon>
-                    欢迎使用 Cursor Web
-                    <iconify-icon icon="twemoji:rocket" class="ml-4"></iconify-icon>
-                </h1>
-                <p class="text-gray-600 max-w-xl mx-auto">
-                    这是一个基于 Tailwind CSS 构建的微前端应用框架。点击上方按钮加载子应用。
-                </p>
-                <div class="mt-8 p-4 bg-blue-50 rounded-lg max-w-xl mx-auto">
-                    <h3 class="font-semibold text-blue-700 mb-2">开发提示</h3>
-                    <p class="text-blue-600 text-sm">
-                        请使用HTTP服务器运行此应用。您可以在终端中运行：
-                        <code class="bg-blue-100 px-2 py-1 rounded">python -m http.server 3000</code>
-                        然后访问 <a href="http://localhost:3000" class="underline">http://localhost:3000</a>
-                    </p>
+        
+        <!-- 侧边栏底部 -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200/30">
+            <div class="sidebar-item">
+                <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
+                    <iconify-icon icon="carbon:settings" width="20"></iconify-icon>
+                    <span>设置</span>
+                </div>
+                <div class="sidebar-submenu mt-2 space-y-2">
+                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="carbon:color-palette" width="16"></iconify-icon>
+                        <span class="text-sm">主题设置</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <iconify-icon icon="carbon:language" width="16"></iconify-icon>
+                        <span class="text-sm">语言选择</span>
+                    </a>
                 </div>
             </div>
-        </main>
+        </div>
+    </aside>
 
-        <!-- 底部状态栏 -->
-        <footer class="bg-white border-t">
-            <div class="container mx-auto px-4 py-3">
-                <div class="flex justify-between items-center text-sm text-gray-500">
-                    <span>Cursor Web Framework</span>
-                    <div class="flex items-center space-x-2">
-                        <iconify-icon icon="material-symbols:info"></iconify-icon>
-                        <span>Version 1.0.0</span>
+    <!-- 主要内容区 -->
+    <main class="scroll-container main-content" id="main-scroll">
+        <!-- 第一页 - 留白页 -->
+        <section id="home" class="page-section">
+            <div class="section-background bg-gradient-to-br from-blue-50 to-indigo-50"></div>
+            <div class="section-content flex items-center justify-center">
+                <!-- 暂时留白，等待设计 -->
+            </div>
+        </section>
+
+        <!-- 第二页 - 主要内容 -->
+        <section id="main-content" class="page-section">
+            <div class="section-content">
+                <!-- 编程语言展示 -->
+                <div id="languages" class="min-h-screen flex items-center">
+                    <div class="container mx-auto px-4 py-16">
+                        <h2 class="text-3xl font-bold text-center mb-12">技术栈</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            <!-- Python -->
+                            <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-blue-100">
+                                        <iconify-icon icon="logos:python" width="32"></iconify-icon>
+                                    </div>
+                                    <h3 class="text-xl font-semibold">Python</h3>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">Web开发</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-4/5 h-full bg-blue-500"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">数据分析</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-11/12 h-full bg-blue-500"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">机器学习</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-3/4 h-full bg-blue-500"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- JavaScript -->
+                            <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-yellow-100">
+                                        <iconify-icon icon="logos:javascript" width="32"></iconify-icon>
+                                    </div>
+                                    <h3 class="text-xl font-semibold">JavaScript</h3>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">前端开发</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-11/12 h-full bg-yellow-500"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">Node.js</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-4/5 h-full bg-yellow-500"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">React/Vue</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-9/12 h-full bg-yellow-500"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Java -->
+                            <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-red-100">
+                                        <iconify-icon icon="logos:java" width="32"></iconify-icon>
+                                    </div>
+                                    <h3 class="text-xl font-semibold">Java</h3>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">Spring Boot</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-10/12 h-full bg-red-500"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">微服务</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-4/5 h-full bg-red-500"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">并发编程</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-3/4 h-full bg-red-500"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Go -->
+                            <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-blue-100">
+                                        <iconify-icon icon="logos:go" width="32"></iconify-icon>
+                                    </div>
+                                    <h3 class="text-xl font-semibold">Go</h3>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">后端服务</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-4/5 h-full bg-blue-500"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">系统编程</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-3/5 h-full bg-blue-500"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600">云原生</span>
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="w-7/12 h-full bg-blue-500"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 作品与博客展示 -->
+                <div class="min-h-screen">
+                    <!-- 内容分类选项卡 -->
+                    <div class="container mx-auto px-4 py-8">
+                        <div class="flex flex-wrap gap-4 justify-center mb-8" id="content-tabs">
+                            <button class="px-6 py-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors active" data-tab="projects">作品展示</button>
+                            <button class="px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors" data-tab="blog">技术博客</button>
+                        </div>
+                    </div>
+
+                    <!-- 作品展示区域 -->
+                    <div id="projects-content" class="tab-content">
+                        <main class="container mx-auto px-4 py-8">
+                            <div id="projects" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <!-- Python项目卡片 -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1 duration-300">
+                                    <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 relative overflow-hidden">
+                                        <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                            <iconify-icon icon="logos:python"></iconify-icon>
+                                        </div>
+                                        <span class="absolute top-4 right-4 px-3 py-1 bg-blue-500 text-white rounded-full text-sm">Python</span>
+                                    </div>
+                                    <div class="p-6">
+                                        <h3 class="text-xl font-semibold mb-2">数据分析平台</h3>
+                                        <p class="text-gray-600 mb-4">基于Python的数据分析和可视化平台，支持多种数据源和图表类型。</p>
+                                        <div class="flex items-center space-x-4">
+                                            <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                                <iconify-icon icon="carbon:logo-github" class="mr-1"></iconify-icon>
+                                                源码
+                                            </a>
+                                            <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                                <iconify-icon icon="carbon:launch" class="mr-1"></iconify-icon>
+                                                演示
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- JavaScript项目卡片 -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1 duration-300">
+                                    <div class="h-48 bg-gradient-to-br from-yellow-400 to-orange-500 relative overflow-hidden">
+                                        <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                            <iconify-icon icon="logos:javascript"></iconify-icon>
+                                        </div>
+                                        <span class="absolute top-4 right-4 px-3 py-1 bg-yellow-500 text-white rounded-full text-sm">JavaScript</span>
+                                    </div>
+                                    <div class="p-6">
+                                        <h3 class="text-xl font-semibold mb-2">在线协作工具</h3>
+                                        <p class="text-gray-600 mb-4">基于WebSocket的实时协作平台，支持多人同时编辑和即时通讯。</p>
+                                        <div class="flex items-center space-x-4">
+                                            <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                                <iconify-icon icon="carbon:logo-github" class="mr-1"></iconify-icon>
+                                                源码
+                                            </a>
+                                            <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                                <iconify-icon icon="carbon:launch" class="mr-1"></iconify-icon>
+                                                演示
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Java项目卡片 -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1 duration-300">
+                                    <div class="h-48 bg-gradient-to-br from-red-500 to-pink-600 relative overflow-hidden">
+                                        <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                            <iconify-icon icon="logos:java"></iconify-icon>
+                                        </div>
+                                        <span class="absolute top-4 right-4 px-3 py-1 bg-red-500 text-white rounded-full text-sm">Java</span>
+                                    </div>
+                                    <div class="p-6">
+                                        <h3 class="text-xl font-semibold mb-2">微服务框架</h3>
+                                        <p class="text-gray-600 mb-4">基于Spring Cloud的微服务架构实现，包含服务发现、配置中心等功能。</p>
+                                        <div class="flex items-center space-x-4">
+                                            <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                                <iconify-icon icon="carbon:logo-github" class="mr-1"></iconify-icon>
+                                                源码
+                                            </a>
+                                            <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                                <iconify-icon icon="carbon:launch" class="mr-1"></iconify-icon>
+                                                演示
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+
+                    <!-- 博客文章区域 -->
+                    <div id="blog-content" class="tab-content hidden">
+                        <main class="container mx-auto px-4 py-8">
+                            <div id="blog" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <!-- 博客文章卡片 -->
+                                <article class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-48 bg-gradient-to-br from-green-400 to-blue-500 relative overflow-hidden">
+                                        <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                            <iconify-icon icon="carbon:article"></iconify-icon>
+                                        </div>
+                                        <span class="absolute top-4 right-4 px-3 py-1 bg-blue-500 text-white rounded-full text-sm">技术分享</span>
+                                    </div>
+                                    <div class="p-6">
+                                        <h3 class="text-xl font-semibold mb-2">深入理解Python异步编程</h3>
+                                        <p class="text-gray-600 mb-4">探讨Python中的异步编程模型，包括协程、事件循环和异步IO的实现原理...</p>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-500">2024-02-01</span>
+                                            <a href="#" class="text-blue-600 hover:text-blue-800">阅读更多</a>
+                                        </div>
+                                    </div>
+                                </article>
+
+                                <article class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-48 bg-gradient-to-br from-purple-400 to-pink-500 relative overflow-hidden">
+                                        <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                            <iconify-icon icon="carbon:article"></iconify-icon>
+                                        </div>
+                                        <span class="absolute top-4 right-4 px-3 py-1 bg-purple-500 text-white rounded-full text-sm">架构设计</span>
+                                    </div>
+                                    <div class="p-6">
+                                        <h3 class="text-xl font-semibold mb-2">微服务架构实践指南</h3>
+                                        <p class="text-gray-600 mb-4">分享在实际项目中使用微服务架构的经验，包括服务拆分、通信和部署策略...</p>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-500">2024-01-28</span>
+                                            <a href="#" class="text-blue-600 hover:text-blue-800">阅读更多</a>
+                                        </div>
+                                    </div>
+                                </article>
+
+                                <article class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-48 bg-gradient-to-br from-yellow-400 to-orange-500 relative overflow-hidden">
+                                        <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                            <iconify-icon icon="carbon:article"></iconify-icon>
+                                        </div>
+                                        <span class="absolute top-4 right-4 px-3 py-1 bg-yellow-500 text-white rounded-full text-sm">前端开发</span>
+                                    </div>
+                                    <div class="p-6">
+                                        <h3 class="text-xl font-semibold mb-2">现代前端工程化实践</h3>
+                                        <p class="text-gray-600 mb-4">探讨现代前端开发中的工程化实践，包括构建工具、性能优化和自动化测试...</p>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-500">2024-01-25</span>
+                                            <a href="#" class="text-blue-600 hover:text-blue-800">阅读更多</a>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        </main>
                     </div>
                 </div>
             </div>
-        </footer>
+        </section>
+
+        <!-- 第三页 - 关于和页脚 -->
+        <section id="about-section" class="page-section">
+            <div class="section-content">
+                <!-- 关于我 -->
+                <div id="about" class="min-h-screen flex items-center bg-white">
+                    <div class="container mx-auto px-4">
+                        <h2 class="text-3xl font-bold text-center mb-8">关于我</h2>
+                        <div class="max-w-3xl mx-auto">
+                            <div class="flex items-center justify-center mb-8">
+                                <div class="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-5xl">
+                                    <iconify-icon icon="carbon:user-avatar"></iconify-icon>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 text-center mb-8">
+                                我是一名全栈开发工程师，热衷于探索新技术和创造有价值的项目。
+                                擅长Python、JavaScript、Java等多种编程语言，有丰富的实战经验。
+                            </p>
+                            <div class="flex justify-center space-x-4">
+                                <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">
+                                    <iconify-icon icon="carbon:logo-github" width="24"></iconify-icon>
+                                </a>
+                                <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">
+                                    <iconify-icon icon="carbon:email" width="24"></iconify-icon>
+                                </a>
+                                <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">
+                                    <iconify-icon icon="carbon:logo-linkedin" width="24"></iconify-icon>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 页脚 -->
+                <footer class="bg-gray-800 text-white py-8">
+                    <div class="container mx-auto px-4 text-center">
+                        <p class="mb-4">&copy; 2024 个人作品集. All rights reserved.</p>
+                        <div class="flex justify-center space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors">联系我</a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors">简历</a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </main>
+
+    <!-- 悬浮按钮组 -->
+    <div class="fixed bottom-6 right-6 flex flex-col space-y-4">
+        <!-- 返回顶部 -->
+        <button id="back-to-top" class="floating-button w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-blue-600 hover:bg-blue-50">
+            <iconify-icon icon="carbon:arrow-up" width="24"></iconify-icon>
+        </button>
+        
+        <!-- 快速导航 -->
+        <button id="quick-nav" class="floating-button w-12 h-12 rounded-full bg-blue-600 shadow-lg flex items-center justify-center text-white hover:bg-blue-700">
+            <iconify-icon icon="carbon:navigation" width="24"></iconify-icon>
+        </button>
+        
+        <!-- 联系方式 -->
+        <button id="contact" class="floating-button w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-blue-600 hover:bg-blue-50">
+            <iconify-icon icon="carbon:chat" width="24"></iconify-icon>
+        </button>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 注册GSAP的ScrollTrigger插件
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // 获取所有section元素
+            const pageElements = document.querySelectorAll('.page-section');
+            
+            // 优化滚动行为
+            const mainScroll = document.getElementById('main-scroll');
+            const sections = mainScroll.querySelectorAll('.page-section');
+            let isScrolling = false;
+            let startY;
+
+            mainScroll.addEventListener('wheel', (e) => {
+                if (isScrolling) return;
+                
+                const currentSection = [...sections].find(section => {
+                    const rect = section.getBoundingClientRect();
+                    return rect.top >= -100 && rect.top <= 100;
+                });
+
+                if (!currentSection) return;
+
+                const nextSection = e.deltaY > 0 
+                    ? currentSection.nextElementSibling 
+                    : currentSection.previousElementSibling;
+
+                if (nextSection) {
+                    e.preventDefault();
+                    isScrolling = true;
+                    nextSection.scrollIntoView({ behavior: 'smooth' });
+                    
+                    setTimeout(() => {
+                        isScrolling = false;
+                    }, 1000);
+                }
+            }, { passive: false });
+
+            // 触摸设备支持
+            mainScroll.addEventListener('touchstart', (e) => {
+                startY = e.touches[0].clientY;
+            }, { passive: true });
+
+            mainScroll.addEventListener('touchmove', (e) => {
+                if (!startY || isScrolling) return;
+
+                const currentY = e.touches[0].clientY;
+                const diff = startY - currentY;
+                const currentSection = [...sections].find(section => {
+                    const rect = section.getBoundingClientRect();
+                    return rect.top >= -100 && rect.top <= 100;
+                });
+
+                if (!currentSection) return;
+
+                const nextSection = diff > 50 
+                    ? currentSection.nextElementSibling 
+                    : diff < -50 
+                        ? currentSection.previousElementSibling 
+                        : null;
+
+                if (nextSection) {
+                    isScrolling = true;
+                    nextSection.scrollIntoView({ behavior: 'smooth' });
+                    startY = null;
+                    
+                    setTimeout(() => {
+                        isScrolling = false;
+                    }, 1000);
+                }
+            }, { passive: true });
+
+            // 监听滚动完成
+            mainScroll.addEventListener('scrollend', () => {
+                isScrolling = false;
+            });
+
+            // 侧边栏切换
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+            });
+
+            // 返回顶部按钮
+            const backToTop = document.getElementById('back-to-top');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTop.classList.remove('opacity-0', 'pointer-events-none');
+                } else {
+                    backToTop.classList.add('opacity-0', 'pointer-events-none');
+                }
+            });
+
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // 快速导航按钮
+            const quickNav = document.getElementById('quick-nav');
+            const navSections = ['home', 'languages', 'about'];
+            let currentSectionIndex = 0;
+
+            quickNav.addEventListener('click', () => {
+                currentSectionIndex = (currentSectionIndex + 1) % navSections.length;
+                const section = document.getElementById(navSections[currentSectionIndex]);
+                section.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // 原有的动画和标签页切换逻辑
+            // 添加滚动动画
+            const addScrollAnimation = (selector) => {
+                gsap.from(selector, {
+                    y: 60,
+                    opacity: 0,
+                    duration: 1,
+                    stagger: 0.2,
+                    scrollTrigger: {
+                        trigger: selector,
+                        start: "top center+=100",
+                        toggleActions: "play none none reverse"
+                    }
+                });
+            };
+
+            // 为各个部分添加动画
+            addScrollAnimation("#languages > div");
+            addScrollAnimation("#projects > div");
+            addScrollAnimation("#blog > article");
+
+            // 内容切换功能
+            const tabButtons = document.querySelectorAll('#content-tabs button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // 更新按钮状态
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('bg-blue-100', 'text-blue-600');
+                        btn.classList.add('bg-gray-100');
+                    });
+                    button.classList.remove('bg-gray-100');
+                    button.classList.add('bg-blue-100', 'text-blue-600');
+
+                    // 显示对应内容
+                    const tabId = button.getAttribute('data-tab');
+                    tabContents.forEach(content => {
+                        if (content.id === `${tabId}-content`) {
+                            content.classList.remove('hidden');
+                            // 触发动画
+                            const items = content.querySelectorAll('.grid > *');
+                            gsap.from(items, {
+                                y: 30,
+                                opacity: 0,
+                                duration: 0.5,
+                                stagger: 0.1
+                            });
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // 添加页面滚动动画
+            pageElements.forEach(page => {
+                gsap.from(page, {
+                    opacity: 0,
+                    y: 50,
+                    duration: 1,
+                    scrollTrigger: {
+                        trigger: page,
+                        start: "top center",
+                        end: "bottom center",
+                        toggleActions: "play none none reverse"
+                    }
+                });
+            });
+
+            // 移除Header相关的点击事件代码
+            const menuIcon = document.getElementById('menu-icon');
+            menuIcon.addEventListener('mouseover', () => {
+                menuIcon.setAttribute('icon', 'carbon:close');
+            });
+            menuIcon.addEventListener('mouseout', () => {
+                menuIcon.setAttribute('icon', 'carbon:menu');
+            });
+        });
+    </script>
 </body>
 </html> 
