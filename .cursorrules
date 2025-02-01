@@ -1,0 +1,100 @@
+# 🎯 Cursor Web
+
+```json
+{
+  "core": {
+    "ui": "Tailwind CSS",
+    "icon": "Iconify",
+    "animation": {
+      "base": "Tailwind CSS Animation",
+      "enhance": "AutoAnimate",
+      "complex": "GSAP"
+    },
+    "responsive": {
+      "sm": "390px+",
+      "md": "414px+",
+      "lg": "768px+",
+      "xl": "1280px+"
+    },
+    "subapps": {
+      "loader": "fetch + DOMParser",
+      "container": "#sub-app-container",
+      "structure": {
+        "apps/": {
+          "demo/": "演示应用",
+          "app2/": "第二个应用"
+        }
+      },
+      "rules": {
+        "content": "必须包含在 <main> 标签内",
+        "loading": "支持单应用和多应用并行加载",
+        "error": "统一的错误处理机制"
+      }
+    }
+  },
+  "style": {
+    "注释": "中文",
+    "开发": "组件化",
+    "命名": "语义化"
+  }
+}
+```
+
+```html
+<!-- 组件示例 -->
+<div class="flex flex-col sm:flex-row">
+  <iconify-icon icon="[lib]:[name]"></iconify-icon>
+  <!-- 内容 -->
+</div>
+
+<!-- 布局示例 -->
+<div class="
+  grid 
+  grid-cols-1 
+  sm:grid-cols-2 
+  lg:grid-cols-4
+">
+  <!-- 内容 -->
+</div>
+
+<!-- 动画示例 -->
+<div class="transition-all duration-300 hover:scale-105">
+  <!-- 基础过渡动画 -->
+</div>
+
+<div data-auto-animate>
+  <!-- AutoAnimate自动处理的动画 -->
+</div>
+
+<div id="gsap-animation">
+  <!-- GSAP复杂动画 -->
+</div>
+
+<!-- 子应用加载示例 -->
+<div id="sub-app-container" class="container mx-auto">
+  <!-- 单应用加载 -->
+  <button onclick="loadSubApp('apps/demo/index.html')">
+    加载Demo应用
+  </button>
+  
+  <!-- 多应用并行加载 -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div id="demo-container"></div>
+    <div id="app2-container"></div>
+  </div>
+</div>
+
+<!-- 加载状态示例 -->
+<div class="flex items-center justify-center">
+  <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+  <p class="text-gray-600">正在加载应用...</p>
+</div>
+
+<!-- 错误状态示例 -->
+<div class="flex flex-col items-center text-center">
+  <iconify-icon icon="material-symbols:error" class="text-red-500 text-4xl"></iconify-icon>
+  <h2 class="text-xl font-semibold text-red-500">加载失败</h2>
+  <p class="text-gray-600">${error.message}</p>
+  <button class="mt-4 btn btn-primary">重试</button>
+</div>
+

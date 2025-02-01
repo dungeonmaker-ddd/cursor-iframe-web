@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>钢琴手风琴展示</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Iconify CDN -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <!-- GSAP 动画库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#64748b',
+                        piano: {
+                            white: '#ffffff',
+                            black: '#1a1a1a',
+                            ivory: '#f8f8f8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen">
+        <!-- 导航栏 -->
+        <nav class="bg-piano-black text-white shadow-lg">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <iconify-icon icon="material-symbols:piano" width="24"></iconify-icon>
+                        <span class="text-lg font-semibold">钢琴手风琴</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button class="p-2 hover:bg-gray-800 rounded-full transition-colors">
+                            <iconify-icon icon="material-symbols:home"></iconify-icon>
+                        </button>
+                        <button class="p-2 hover:bg-gray-800 rounded-full transition-colors">
+                            <iconify-icon icon="material-symbols:settings"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主要内容 -->
+        <main class="container mx-auto px-4 py-8">
+            <!-- 搜索区域 -->
+            <div class="mb-6">
+                <div class="relative max-w-xl mx-auto">
+                    <input type="text" 
+                           placeholder="搜索..." 
+                           class="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm">
+                    <iconify-icon icon="material-symbols:search" 
+                                class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    </iconify-icon>
+                </div>
+            </div>
+
+            <!-- 钢琴键盘区域 -->
+            <div class="bg-gradient-to-b from-gray-900 to-gray-800 p-6 rounded-xl shadow-2xl">
+                <div class="space-y-2">
+                    <!-- C -->
+                    <div class="group">
+                        <button onclick="toggleAccordion(this)" 
+                                data-note="C"
+                                class="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 active:bg-primary active:text-white rounded-lg transition-all duration-200 shadow-sm">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl font-bold">C</span>
+                                <span class="text-lg">C大调</span>
+                            </div>
+                            <iconify-icon icon="material-symbols:keyboard-arrow-down" 
+                                        class="text-xl transform transition-transform group-[.active]:rotate-180">
+                            </iconify-icon>
+                        </button>
+                        <div class="accordion-content hidden">
+                            <div class="p-4 bg-white border-t border-gray-100">
+                                <p class="text-gray-600">这是C大调的介绍内容...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- D -->
+                    <div class="group">
+                        <button onclick="toggleAccordion(this)" 
+                                data-note="D"
+                                class="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 active:bg-primary active:text-white rounded-lg transition-all duration-200 shadow-sm">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl font-bold">D</span>
+                                <span class="text-lg">D大调</span>
+                            </div>
+                            <iconify-icon icon="material-symbols:keyboard-arrow-down" 
+                                        class="text-xl transform transition-transform group-[.active]:rotate-180">
+                            </iconify-icon>
+                        </button>
+                        <div class="accordion-content hidden">
+                            <div class="p-4 bg-white border-t border-gray-100">
+                                <p class="text-gray-600">这是D大调的介绍内容...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- E -->
+                    <div class="group">
+                        <button onclick="toggleAccordion(this)" 
+                                data-note="E"
+                                class="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 active:bg-primary active:text-white rounded-lg transition-all duration-200 shadow-sm">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl font-bold">E</span>
+                                <span class="text-lg">E大调</span>
+                            </div>
+                            <iconify-icon icon="material-symbols:keyboard-arrow-down" 
+                                        class="text-xl transform transition-transform group-[.active]:rotate-180">
+                            </iconify-icon>
+                        </button>
+                        <div class="accordion-content hidden">
+                            <div class="p-4 bg-white border-t border-gray-100">
+                                <p class="text-gray-600">这是E大调的介绍内容...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- F -->
+                    <div class="group">
+                        <button onclick="toggleAccordion(this)" 
+                                data-note="F"
+                                class="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 active:bg-primary active:text-white rounded-lg transition-all duration-200 shadow-sm">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl font-bold">F</span>
+                                <span class="text-lg">F大调</span>
+                            </div>
+                            <iconify-icon icon="material-symbols:keyboard-arrow-down" 
+                                        class="text-xl transform transition-transform group-[.active]:rotate-180">
+                            </iconify-icon>
+                        </button>
+                        <div class="accordion-content hidden">
+                            <div class="p-4 bg-white border-t border-gray-100">
+                                <p class="text-gray-600">这是F大调的介绍内容...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- G -->
+                    <div class="group">
+                        <button onclick="toggleAccordion(this)" 
+                                data-note="G"
+                                class="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 active:bg-primary active:text-white rounded-lg transition-all duration-200 shadow-sm">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl font-bold">G</span>
+                                <span class="text-lg">G大调</span>
+                            </div>
+                            <iconify-icon icon="material-symbols:keyboard-arrow-down" 
+                                        class="text-xl transform transition-transform group-[.active]:rotate-180">
+                            </iconify-icon>
+                        </button>
+                        <div class="accordion-content hidden">
+                            <div class="p-4 bg-white border-t border-gray-100">
+                                <p class="text-gray-600">这是G大调的介绍内容...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- C# -->
+                    <div class="group">
+                        <button onclick="toggleAccordion(this)" 
+                                data-note="C#"
+                                class="w-full flex items-center justify-between p-4 bg-gray-900 text-white hover:bg-gray-800 active:bg-primary rounded-lg transition-all duration-200 shadow-sm">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl font-bold">C#</span>
+                                <span class="text-lg">C#大调</span>
+                            </div>
+                            <iconify-icon icon="material-symbols:keyboard-arrow-down" 
+                                        class="text-xl transform transition-transform group-[.active]:rotate-180">
+                            </iconify-icon>
+                        </button>
+                        <div class="accordion-content hidden">
+                            <div class="p-4 bg-white border-t border-gray-100">
+                                <p class="text-gray-600">这是C#大调的介绍内容...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- D# -->
+                    <div class="group">
+                        <button onclick="toggleAccordion(this)" 
+                                data-note="D#"
+                                class="w-full flex items-center justify-between p-4 bg-gray-900 text-white hover:bg-gray-800 active:bg-primary rounded-lg transition-all duration-200 shadow-sm">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl font-bold">D#</span>
+                                <span class="text-lg">D#大调</span>
+                            </div>
+                            <iconify-icon icon="material-symbols:keyboard-arrow-down" 
+                                        class="text-xl transform transition-transform group-[.active]:rotate-180">
+                            </iconify-icon>
+                        </button>
+                        <div class="accordion-content hidden">
+                            <div class="p-4 bg-white border-t border-gray-100">
+                                <p class="text-gray-600">这是D#大调的介绍内容...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleAccordion(button) {
+            const group = button.closest('.group');
+            const content = group.querySelector('.accordion-content');
+            const allGroups = document.querySelectorAll('.group');
+            
+            // 关闭其他所有手风琴
+            allGroups.forEach(item => {
+                if (item !== group) {
+                    item.classList.remove('active');
+                    item.querySelector('.accordion-content').classList.add('hidden');
+                }
+            });
+            
+            // 切换当前手风琴
+            group.classList.toggle('active');
+            content.classList.toggle('hidden');
+            
+            // GSAP动画
+            if (!content.classList.contains('hidden')) {
+                gsap.from(content, {
+                    height: 0,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+                
+                gsap.from(content.children[0], {
+                    y: -20,
+                    opacity: 0,
+                    duration: 0.4,
+                    delay: 0.1
+                });
+            }
+            
+            // 播放钢琴音效
+            const note = button.getAttribute('data-note');
+            const audio = new Audio(`https://assets.mixkit.co/sfx/preview/mixkit-piano-${note.replace('#', 'sharp')}.wav`);
+            audio.play();
+            
+            // 按键动画
+            gsap.to(button, {
+                scale: 0.98,
+                duration: 0.1,
+                yoyo: true,
+                repeat: 1
+            });
+        }
+    </script>
+</body>
+</html> 
