@@ -1,0 +1,81 @@
+<!-- 悬浮按钮组 -->
+<style>
+    .floating-button {
+        transition: all 0.3s ease;
+    }
+    .floating-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<div class="fixed bottom-6 right-6 flex flex-col space-y-4">
+    <!-- 返回顶部 -->
+    <button id="back-to-top" class="floating-button w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-blue-600 hover:bg-blue-50 hidden">
+        <iconify-icon icon="carbon:arrow-up" width="24"></iconify-icon>
+    </button>
+    
+    <!-- 快速导航 -->
+    <button id="quick-nav" class="floating-button w-12 h-12 rounded-full bg-blue-600 shadow-lg flex items-center justify-center text-white hover:bg-blue-700">
+        <iconify-icon icon="carbon:navigation" width="24"></iconify-icon>
+    </button>
+    
+    <!-- 联系方式 -->
+    <button id="contact" class="floating-button w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-blue-600 hover:bg-blue-50">
+        <iconify-icon icon="carbon:chat" width="24"></iconify-icon>
+    </button>
+</div>
+
+<script>
+    // 立即执行的函数表达式(IIFE)来初始化悬浮按钮功能
+    (function initFloatingButtons() {
+        const backToTopButton = document.getElementById('back-to-top');
+        const mainScroll = document.getElementById('main-scroll') || window;
+        const scrollThreshold = 300;
+
+        // 返回顶部按钮点击事件
+        if (backToTopButton) {
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // 滚动监听函数
+        function handleScroll() {
+            if (!backToTopButton) return;
+            
+            const scrollTop = mainScroll === window 
+                ? window.pageYOffset || document.documentElement.scrollTop
+                : mainScroll.scrollTop;
+
+            backToTopButton.style.display = scrollTop > scrollThreshold ? 'flex' : 'none';
+        }
+
+        // 添加滚动监听
+        mainScroll.addEventListener('scroll', handleScroll);
+
+        // 初始检查滚动位置
+        handleScroll();
+
+        // 快速导航按钮点击事件
+        const quickNavButton = document.getElementById('quick-nav');
+        if (quickNavButton) {
+            quickNavButton.addEventListener('click', () => {
+                // TODO: 实现快速导航功能
+                console.log('Quick navigation clicked');
+            });
+        }
+
+        // 联系方式按钮点击事件
+        const contactButton = document.getElementById('contact');
+        if (contactButton) {
+            contactButton.addEventListener('click', () => {
+                // TODO: 实现联系方式功能
+                console.log('Contact clicked');
+            });
+        }
+    })();
+</script> 
