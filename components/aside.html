@@ -1,116 +1,184 @@
 <!-- 侧边栏 -->
-<aside class="sidebar fixed top-0 left-0 h-full w-64 z-40 lg:translate-x-0">
-    <!-- 侧边栏头部 -->
-    <div class="h-16 px-4 flex items-center border-b border-gray-200/30">
-        <iconify-icon icon="carbon:code" width="32" class="text-blue-600"></iconify-icon>
-        <span class="text-xl font-bold ml-2">导航菜单</span>
-    </div>
-    
-    <!-- 侧边栏菜单 -->
-    <nav class="p-4 space-y-4">
-        <!-- 首页 -->
-        <div class="sidebar-item">
-            <a href="#home" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                <iconify-icon icon="carbon:home" width="20"></iconify-icon>
-                <span>首页</span>
-            </a>
-        </div>
+<style>
+    .sidebar {
+        transition: all 0.3s ease-in-out;
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        font-family: 'Noto Sans', sans-serif;
+        padding-left: 3rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 64px;
+        z-index: 40;
+    }
+    @media (min-width: 1024px) {
+        .sidebar {
+            width: 256px;
+        }
+    }
 
-        <!-- 技术栈 -->
-        <div class="sidebar-item">
-            <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
-                <iconify-icon icon="carbon:skill-level" width="20"></iconify-icon>
-                <span>技术栈</span>
-            </div>
-            <div class="sidebar-submenu mt-2 space-y-2">
-                <a href="#languages" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="logos:python" width="16"></iconify-icon>
-                    <span class="text-sm">Python</span>
-                </a>
-                <a href="#languages" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="logos:javascript" width="16"></iconify-icon>
-                    <span class="text-sm">JavaScript</span>
-                </a>
-                <a href="#languages" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="logos:java" width="16"></iconify-icon>
-                    <span class="text-sm">Java</span>
-                </a>
-                <a href="#languages" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="logos:go" width="16"></iconify-icon>
-                    <span class="text-sm">Go</span>
-                </a>
-            </div>
-        </div>
+    /* 树状结构基础样式 */
+    .tree-structure {
+        position: absolute;
+        left: 2rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: rgba(148, 163, 184, 0.2);
+    }
 
-        <!-- 作品展示 -->
-        <div class="sidebar-item">
-            <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
-                <iconify-icon icon="carbon:portfolio" width="20"></iconify-icon>
-                <span>作品展示</span>
-            </div>
-            <div class="sidebar-submenu mt-2 space-y-2">
-                <a href="#projects" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="carbon:application" width="16"></iconify-icon>
-                    <span class="text-sm">应用项目</span>
-                </a>
-                <a href="#projects" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="carbon:cloud" width="16"></iconify-icon>
-                    <span class="text-sm">云服务</span>
-                </a>
-                <a href="#projects" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="carbon:tool-kit" width="16"></iconify-icon>
-                    <span class="text-sm">工具库</span>
-                </a>
-            </div>
-        </div>
+    /* 主容器样式 */
+    .main-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
 
-        <!-- 技术博客 -->
-        <div class="sidebar-item">
-            <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
-                <iconify-icon icon="carbon:blog" width="20"></iconify-icon>
-                <span>技术博客</span>
-            </div>
-            <div class="sidebar-submenu mt-2 space-y-2">
-                <a href="#blog" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="carbon:article" width="16"></iconify-icon>
-                    <span class="text-sm">技术文章</span>
-                </a>
-                <a href="#blog" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="carbon:notebook" width="16"></iconify-icon>
-                    <span class="text-sm">学习笔记</span>
-                </a>
-                <a href="#blog" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="carbon:idea" width="16"></iconify-icon>
-                    <span class="text-sm">心得体会</span>
-                </a>
-            </div>
-        </div>
+    /* Logo样式 */
+    .logo-section {
+        padding: 1.5rem 0;
+        position: relative;
+    }
+    .logo-section::before {
+        content: '';
+        position: absolute;
+        left: -2rem;
+        width: 2rem;
+        height: 2px;
+        background-color: rgba(148, 163, 184, 0.2);
+    }
+    .logo-content {
+        padding-left: 0.25rem;
+    }
 
-        <!-- 关于我 -->
-        <div class="sidebar-item">
-            <a href="#about" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                <iconify-icon icon="carbon:user-profile" width="20"></iconify-icon>
-                <span>关于我</span>
-            </a>
-        </div>
-    </nav>
-    
-    <!-- 侧边栏底部 -->
-    <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200/30">
-        <div class="sidebar-item">
-            <div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
-                <iconify-icon icon="carbon:settings" width="20"></iconify-icon>
-                <span>设置</span>
+    /* 内容区域样式 */
+    .content-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding-bottom: 2rem;
+    }
+
+    /* 树枝样式 */
+    .tree-branch {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    .tree-branch:last-child {
+        margin-bottom: 0;
+    }
+    .tree-branch::before {
+        content: '';
+        position: absolute;
+        left: -2rem;
+        top: 0;
+        width: 2rem;
+        height: 2px;
+        background-color: rgba(148, 163, 184, 0.2);
+    }
+    .tree-branch-title {
+        font-size: 0.75rem;
+        color: rgba(148, 163, 184, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+    .tree-branch-content {
+        padding-left: 0.25rem;
+    }
+
+    /* 导航项样式 */
+    .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        color: rgba(148, 163, 184, 0.8);
+        transition: all 0.3s ease;
+        margin: 0.25rem 0;
+    }
+    .nav-item:hover,
+    .nav-item.active {
+        color: #e11d48;
+    }
+    .nav-item iconify-icon {
+        margin-right: 0.5rem;
+        width: 16px;
+        height: 16px;
+        opacity: 0.8;
+    }
+    .nav-item:hover iconify-icon,
+    .nav-item.active iconify-icon {
+        opacity: 1;
+    }
+</style>
+
+<aside class="sidebar">
+    <!-- 主树干 -->
+    <div class="tree-structure"></div>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- Logo区域 -->
+        <div class="logo-section">
+            <div class="logo-content">
+                <div class="flex items-center">
+                    <iconify-icon icon="carbon:code" width="24" class="text-rose-600"></iconify-icon>
+                    <span class="text-lg font-bold ml-2 text-rose-600">CURSOR</span>
+                </div>
             </div>
-            <div class="sidebar-submenu mt-2 space-y-2">
-                <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="carbon:color-palette" width="16"></iconify-icon>
-                    <span class="text-sm">主题设置</span>
-                </a>
-                <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="carbon:language" width="16"></iconify-icon>
-                    <span class="text-sm">语言选择</span>
-                </a>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="content-section">
+            <!-- 菜单模块 -->
+            <div class="tree-branch">
+                <div class="tree-branch-title">Menu</div>
+                <div class="tree-branch-content">
+                    <a href="#home" class="nav-item active">
+                        <iconify-icon icon="carbon:home"></iconify-icon>
+                        <span>首页</span>
+                    </a>
+                    <a href="#tech" class="nav-item">
+                        <iconify-icon icon="carbon:skill-level"></iconify-icon>
+                        <span>技术栈</span>
+                    </a>
+                    <a href="#portfolio" class="nav-item">
+                        <iconify-icon icon="carbon:portfolio"></iconify-icon>
+                        <span>作品展示</span>
+                    </a>
+                    <a href="#blog" class="nav-item">
+                        <iconify-icon icon="carbon:blog"></iconify-icon>
+                        <span>技术博客</span>
+                    </a>
+                    <a href="#about" class="nav-item">
+                        <iconify-icon icon="carbon:user-profile"></iconify-icon>
+                        <span>关于我</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 功能模块 -->
+            <div class="tree-branch">
+                <div class="tree-branch-title">Features</div>
+                <div class="tree-branch-content">
+                    <div class="flex gap-4 justify-start">
+                        <a href="#" class="nav-item">
+                            <iconify-icon icon="carbon:logo-github" width="20"></iconify-icon>
+                        </a>
+                        <a href="#" class="nav-item">
+                            <iconify-icon icon="carbon:email" width="20"></iconify-icon>
+                        </a>
+                        <a href="#settings" class="nav-item">
+                            <iconify-icon icon="carbon:settings"></iconify-icon>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

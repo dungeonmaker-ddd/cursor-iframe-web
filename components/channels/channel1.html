@@ -1,0 +1,80 @@
+<!-- 频道1: 欢迎页面 -->
+<div class="channel-content welcome-channel">
+    <style>
+        .welcome-channel {
+            padding: 2rem;
+            color: #fff;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-content {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .welcome-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #60a5fa, #6366f1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.5rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid #3b82f6;
+            width: 0;
+            animation: typing 3s steps(40) forwards;
+        }
+
+        .welcome-description {
+            color: #94a3b8;
+            line-height: 1.8;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <div class="welcome-content">
+        <h1 class="welcome-title">Hello, World!</h1>
+        <p class="welcome-subtitle">热爱编程 • 热爱创造 • 热爱分享</p>
+        <p class="welcome-description">
+            我是一名全栈开发工程师，专注于构建优雅的解决方案。<br>
+            无论是前端开发、后端架构，还是数据分析，我都充满热情。
+        </p>
+    </div>
+</div>

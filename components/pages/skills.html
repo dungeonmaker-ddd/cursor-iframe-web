@@ -1,0 +1,214 @@
+<!-- Skills 组件 -->
+<style>
+    /* Skills组件特有样式 */
+    .skill-card {
+        transition: all 0.3s ease;
+    }
+    
+    .skill-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .skill-progress {
+        transition: width 1s ease-out;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .skill-card {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .skill-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    }
+</style>
+
+<section id="skills" class="page-section">
+    <div class="section-background bg-gradient-to-br from-gray-50 to-blue-50"></div>
+    <div class="section-content">
+        <!-- 编程语言展示 -->
+        <div id="languages" class="min-h-screen flex items-center">
+            <div class="container mx-auto px-4 py-16">
+                <h2 class="text-3xl font-bold text-center mb-12 animate-fade-in">技术栈</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Python -->
+                    <div class="skill-card bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-blue-100">
+                                <iconify-icon icon="logos:python" width="32"></iconify-icon>
+                            </div>
+                            <h3 class="text-xl font-semibold">Python</h3>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">Web开发</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-4/5 h-full bg-blue-500"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">数据分析</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-11/12 h-full bg-blue-500"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">机器学习</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-3/4 h-full bg-blue-500"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- JavaScript -->
+                    <div class="skill-card bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-yellow-100">
+                                <iconify-icon icon="logos:javascript" width="32"></iconify-icon>
+                            </div>
+                            <h3 class="text-xl font-semibold">JavaScript</h3>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">前端开发</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-11/12 h-full bg-yellow-500"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">Node.js</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-4/5 h-full bg-yellow-500"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">React/Vue</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-9/12 h-full bg-yellow-500"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Java -->
+                    <div class="skill-card bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-red-100">
+                                <iconify-icon icon="logos:java" width="32"></iconify-icon>
+                            </div>
+                            <h3 class="text-xl font-semibold">Java</h3>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">Spring Boot</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-10/12 h-full bg-red-500"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">微服务</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-4/5 h-full bg-red-500"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">并发编程</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-3/4 h-full bg-red-500"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Go -->
+                    <div class="skill-card bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-blue-100">
+                                <iconify-icon icon="logos:go" width="32"></iconify-icon>
+                            </div>
+                            <h3 class="text-xl font-semibold">Go</h3>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">后端服务</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-4/5 h-full bg-blue-500"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">系统编程</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-3/5 h-full bg-blue-500"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-600">云原生</span>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="skill-progress w-7/12 h-full bg-blue-500"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // 立即执行的函数表达式(IIFE)来初始化Skills组件
+    (function initSkillsComponent() {
+        // 获取所有技能进度条
+        const skillBars = document.querySelectorAll('.skill-progress');
+        
+        // 创建Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // 当元素进入视口时，开始动画
+                    entry.target.style.width = entry.target.classList.contains('w-4/5') ? '80%' :
+                                             entry.target.classList.contains('w-11/12') ? '91.666667%' :
+                                             entry.target.classList.contains('w-3/4') ? '75%' :
+                                             entry.target.classList.contains('w-10/12') ? '83.333333%' :
+                                             entry.target.classList.contains('w-9/12') ? '75%' :
+                                             entry.target.classList.contains('w-7/12') ? '58.333333%' :
+                                             entry.target.classList.contains('w-3/5') ? '60%' : '0%';
+                    // 停止观察这个元素
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        // 开始观察所有技能进度条
+        skillBars.forEach(bar => {
+            bar.style.width = '0%';
+            observer.observe(bar);
+        });
+
+        // 监听暗色模式变化
+        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleDarkModeChange = (e) => {
+            const background = document.querySelector('.section-background');
+            if (e.matches) {
+                background.classList.remove('from-gray-50', 'to-blue-50');
+                background.classList.add('from-gray-900', 'to-blue-900');
+            } else {
+                background.classList.remove('from-gray-900', 'to-blue-900');
+                background.classList.add('from-gray-50', 'to-blue-50');
+            }
+        };
+        
+        darkModeMediaQuery.addListener(handleDarkModeChange);
+        handleDarkModeChange(darkModeMediaQuery);
+
+        // 清理函数
+        return () => {
+            darkModeMediaQuery.removeListener(handleDarkModeChange);
+            observer.disconnect();
+        };
+    })();
+</script> 

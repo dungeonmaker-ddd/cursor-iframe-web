@@ -1,0 +1,168 @@
+<!-- 频道2: 技能展示 -->
+<div class="channel-content skills-channel">
+    <style>
+        .skills-channel {
+            padding: 2rem;
+            color: #fff;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .skills-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, #60a5fa, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .skill-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .skill-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .skill-icon {
+            font-size: 2rem;
+            color: #60a5fa;
+        }
+
+        .skill-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .skill-description {
+            color: #94a3b8;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .skill-level {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .skill-level-fill {
+            height: 100%;
+            background: #60a5fa;
+            border-radius: 2px;
+            width: 0;
+            transition: width 1s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .skill-card:nth-child(2) { animation-delay: 0.1s; }
+        .skill-card:nth-child(3) { animation-delay: 0.2s; }
+        .skill-card:nth-child(4) { animation-delay: 0.3s; }
+    </style>
+
+    <h2 class="skills-title">技能展示</h2>
+    
+    <div class="skills-grid">
+        <!-- 前端开发 -->
+        <div class="skill-card">
+            <div class="skill-header">
+                <iconify-icon class="skill-icon" icon="logos:react"></iconify-icon>
+                <h3 class="skill-name">前端开发</h3>
+            </div>
+            <p class="skill-description">React, Vue, TypeScript, Tailwind CSS</p>
+            <div class="skill-level">
+                <div class="skill-level-fill" style="width: 90%"></div>
+            </div>
+        </div>
+
+        <!-- 后端开发 -->
+        <div class="skill-card">
+            <div class="skill-header">
+                <iconify-icon class="skill-icon" icon="logos:nodejs"></iconify-icon>
+                <h3 class="skill-name">后端开发</h3>
+            </div>
+            <p class="skill-description">Node.js, Python, Java, MySQL</p>
+            <div class="skill-level">
+                <div class="skill-level-fill" style="width: 85%"></div>
+            </div>
+        </div>
+
+        <!-- 云服务 -->
+        <div class="skill-card">
+            <div class="skill-header">
+                <iconify-icon class="skill-icon" icon="logos:aws"></iconify-icon>
+                <h3 class="skill-name">云服务</h3>
+            </div>
+            <p class="skill-description">AWS, Docker, Kubernetes</p>
+            <div class="skill-level">
+                <div class="skill-level-fill" style="width: 80%"></div>
+            </div>
+        </div>
+
+        <!-- UI设计 -->
+        <div class="skill-card">
+            <div class="skill-header">
+                <iconify-icon class="skill-icon" icon="logos:figma"></iconify-icon>
+                <h3 class="skill-name">UI设计</h3>
+            </div>
+            <p class="skill-description">Figma, Adobe XD, Sketch</p>
+            <div class="skill-level">
+                <div class="skill-level-fill" style="width: 75%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 初始化技能卡片动画
+    function initSkillCards() {
+        const skillLevels = document.querySelectorAll('.skill-level-fill');
+        skillLevels.forEach(level => {
+            const width = level.style.width;
+            level.style.width = '0';
+            setTimeout(() => {
+                level.style.width = width;
+            }, 100);
+        });
+    }
+
+    // 当频道加载完成时初始化
+    initSkillCards();
+</script> 

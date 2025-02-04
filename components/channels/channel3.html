@@ -1,0 +1,219 @@
+<!-- 频道3: 项目展示 -->
+<div class="channel-content projects-channel">
+    <style>
+        .projects-channel {
+            padding: 2rem;
+            color: #fff;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .projects-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, #818cf8, #6366f1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: projectSlideIn 0.5s ease forwards;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 180px;
+            background: #2a2a2a;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover .project-image img {
+            transform: scale(1.05);
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-description {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .project-tag {
+            background: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .project-link {
+            color: #818cf8;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: color 0.3s ease;
+        }
+
+        .project-link:hover {
+            color: #6366f1;
+        }
+
+        @keyframes projectSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-card:nth-child(2) { animation-delay: 0.1s; }
+        .project-card:nth-child(3) { animation-delay: 0.2s; }
+        .project-card:nth-child(4) { animation-delay: 0.3s; }
+    </style>
+
+    <h2 class="projects-title">项目展示</h2>
+    
+    <div class="projects-grid">
+        <!-- 项目1 -->
+        <div class="project-card">
+            <div class="project-image">
+                <img src="https://via.placeholder.com/300x180/2a2a2a/666666" alt="项目预览">
+            </div>
+            <div class="project-content">
+                <h3 class="project-title">智能电视UI框架</h3>
+                <p class="project-description">
+                    基于Web技术的现代化智能电视UI框架，支持多种交互模式和动画效果。
+                </p>
+                <div class="project-tags">
+                    <span class="project-tag">Vue.js</span>
+                    <span class="project-tag">TypeScript</span>
+                    <span class="project-tag">WebGL</span>
+                </div>
+                <div class="project-links">
+                    <a href="#" class="project-link">
+                        <iconify-icon icon="mdi:github"></iconify-icon>
+                        源码
+                    </a>
+                    <a href="#" class="project-link">
+                        <iconify-icon icon="mdi:web"></iconify-icon>
+                        演示
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 项目2 -->
+        <div class="project-card">
+            <div class="project-image">
+                <img src="https://via.placeholder.com/300x180/2a2a2a/666666" alt="项目预览">
+            </div>
+            <div class="project-content">
+                <h3 class="project-title">AI图像处理工具</h3>
+                <p class="project-description">
+                    基于深度学习的图像处理工具，支持智能抠图、风格迁移等功能。
+                </p>
+                <div class="project-tags">
+                    <span class="project-tag">Python</span>
+                    <span class="project-tag">TensorFlow</span>
+                    <span class="project-tag">OpenCV</span>
+                </div>
+                <div class="project-links">
+                    <a href="#" class="project-link">
+                        <iconify-icon icon="mdi:github"></iconify-icon>
+                        源码
+                    </a>
+                    <a href="#" class="project-link">
+                        <iconify-icon icon="mdi:web"></iconify-icon>
+                        演示
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 项目3 -->
+        <div class="project-card">
+            <div class="project-image">
+                <img src="https://via.placeholder.com/300x180/2a2a2a/666666" alt="项目预览">
+            </div>
+            <div class="project-content">
+                <h3 class="project-title">云原生监控平台</h3>
+                <p class="project-description">
+                    面向云原生应用的实时监控平台，支持多集群管理和智能告警。
+                </p>
+                <div class="project-tags">
+                    <span class="project-tag">Go</span>
+                    <span class="project-tag">Kubernetes</span>
+                    <span class="project-tag">Prometheus</span>
+                </div>
+                <div class="project-links">
+                    <a href="#" class="project-link">
+                        <iconify-icon icon="mdi:github"></iconify-icon>
+                        源码
+                    </a>
+                    <a href="#" class="project-link">
+                        <iconify-icon icon="mdi:web"></iconify-icon>
+                        演示
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,251 @@
+<!-- Projects 组件 -->
+<style>
+    /* Projects组件特有样式 */
+    .project-card {
+        transition: all 0.3s ease;
+    }
+    
+    .project-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .tab-button {
+        transition: all 0.3s ease;
+    }
+    
+    .tab-button.active {
+        background-color: #2563eb;
+        color: white;
+    }
+
+    .tab-content {
+        transition: opacity 0.3s ease;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .project-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .tab-button:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+        }
+    }
+</style>
+
+<section id="projects" class="page-section">
+    <div class="section-background bg-gradient-to-br from-indigo-50 to-purple-50"></div>
+    <div class="section-content">
+        <!-- 作品与博客展示 -->
+        <div class="min-h-screen py-16">
+            <!-- 内容分类选项卡 -->
+            <div class="container mx-auto px-4 py-8">
+                <h2 class="text-3xl font-bold text-center mb-12 animate-fade-in">作品展示</h2>
+                <div class="flex flex-wrap gap-4 justify-center mb-8" id="content-tabs">
+                    <button class="tab-button px-6 py-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors active" data-tab="projects">项目作品</button>
+                    <button class="tab-button px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors" data-tab="blog">技术博客</button>
+                </div>
+            </div>
+
+            <!-- 作品展示区域 -->
+            <div id="projects-content" class="tab-content">
+                <div class="container mx-auto px-4 py-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Python项目卡片 -->
+                        <div class="project-card bg-white rounded-lg shadow-md overflow-hidden">
+                            <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 relative overflow-hidden">
+                                <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                    <iconify-icon icon="logos:python"></iconify-icon>
+                                </div>
+                                <span class="absolute top-4 right-4 px-3 py-1 bg-blue-500 text-white rounded-full text-sm">Python</span>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-2">数据分析平台</h3>
+                                <p class="text-gray-600 mb-4">基于Python的数据分析和可视化平台，支持多种数据源和图表类型。</p>
+                                <div class="flex items-center space-x-4">
+                                    <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                        <iconify-icon icon="carbon:logo-github" class="mr-1"></iconify-icon>
+                                        源码
+                                    </a>
+                                    <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                        <iconify-icon icon="carbon:launch" class="mr-1"></iconify-icon>
+                                        演示
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- JavaScript项目卡片 -->
+                        <div class="project-card bg-white rounded-lg shadow-md overflow-hidden">
+                            <div class="h-48 bg-gradient-to-br from-yellow-400 to-orange-500 relative overflow-hidden">
+                                <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                    <iconify-icon icon="logos:javascript"></iconify-icon>
+                                </div>
+                                <span class="absolute top-4 right-4 px-3 py-1 bg-yellow-500 text-white rounded-full text-sm">JavaScript</span>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-2">在线协作工具</h3>
+                                <p class="text-gray-600 mb-4">基于WebSocket的实时协作平台，支持多人同时编辑和即时通讯。</p>
+                                <div class="flex items-center space-x-4">
+                                    <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                        <iconify-icon icon="carbon:logo-github" class="mr-1"></iconify-icon>
+                                        源码
+                                    </a>
+                                    <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                        <iconify-icon icon="carbon:launch" class="mr-1"></iconify-icon>
+                                        演示
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Java项目卡片 -->
+                        <div class="project-card bg-white rounded-lg shadow-md overflow-hidden">
+                            <div class="h-48 bg-gradient-to-br from-red-500 to-pink-600 relative overflow-hidden">
+                                <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                    <iconify-icon icon="logos:java"></iconify-icon>
+                                </div>
+                                <span class="absolute top-4 right-4 px-3 py-1 bg-red-500 text-white rounded-full text-sm">Java</span>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-2">微服务框架</h3>
+                                <p class="text-gray-600 mb-4">基于Spring Cloud的微服务架构实现，包含服务发现、配置中心等功能。</p>
+                                <div class="flex items-center space-x-4">
+                                    <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                        <iconify-icon icon="carbon:logo-github" class="mr-1"></iconify-icon>
+                                        源码
+                                    </a>
+                                    <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
+                                        <iconify-icon icon="carbon:launch" class="mr-1"></iconify-icon>
+                                        演示
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 博客文章区域 -->
+            <div id="blog-content" class="tab-content hidden">
+                <div class="container mx-auto px-4 py-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- 博客文章卡片 -->
+                        <article class="project-card bg-white rounded-lg shadow-md overflow-hidden">
+                            <div class="h-48 bg-gradient-to-br from-green-400 to-blue-500 relative overflow-hidden">
+                                <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                    <iconify-icon icon="carbon:article"></iconify-icon>
+                                </div>
+                                <span class="absolute top-4 right-4 px-3 py-1 bg-blue-500 text-white rounded-full text-sm">技术分享</span>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-2">深入理解Python异步编程</h3>
+                                <p class="text-gray-600 mb-4">探讨Python中的异步编程模型，包括协程、事件循环和异步IO的实现原理...</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">2024-02-01</span>
+                                    <a href="#" class="text-blue-600 hover:text-blue-800">阅读更多</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="project-card bg-white rounded-lg shadow-md overflow-hidden">
+                            <div class="h-48 bg-gradient-to-br from-purple-400 to-pink-500 relative overflow-hidden">
+                                <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                    <iconify-icon icon="carbon:article"></iconify-icon>
+                                </div>
+                                <span class="absolute top-4 right-4 px-3 py-1 bg-purple-500 text-white rounded-full text-sm">架构设计</span>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-2">微服务架构实践指南</h3>
+                                <p class="text-gray-600 mb-4">分享在实际项目中使用微服务架构的经验，包括服务拆分、通信和部署策略...</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">2024-01-28</span>
+                                    <a href="#" class="text-blue-600 hover:text-blue-800">阅读更多</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="project-card bg-white rounded-lg shadow-md overflow-hidden">
+                            <div class="h-48 bg-gradient-to-br from-yellow-400 to-orange-500 relative overflow-hidden">
+                                <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
+                                    <iconify-icon icon="carbon:article"></iconify-icon>
+                                </div>
+                                <span class="absolute top-4 right-4 px-3 py-1 bg-yellow-500 text-white rounded-full text-sm">前端开发</span>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-2">现代前端工程化实践</h3>
+                                <p class="text-gray-600 mb-4">探讨现代前端开发中的工程化实践，包括构建工具、性能优化和自动化测试...</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">2024-01-25</span>
+                                    <a href="#" class="text-blue-600 hover:text-blue-800">阅读更多</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // 立即执行的函数表达式(IIFE)来初始化Projects组件
+    (function initProjectsComponent() {
+        // 获取选项卡和内容区域
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // 选项卡切换功能
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // 更新按钮状态
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active', 'bg-blue-600', 'text-white');
+                    btn.classList.add('bg-gray-100', 'text-gray-600');
+                });
+                button.classList.add('active', 'bg-blue-600', 'text-white');
+                button.classList.remove('bg-gray-100', 'text-gray-600');
+                
+                // 更新内容显示
+                tabContents.forEach(content => {
+                    if (content.id === `${tabId}-content`) {
+                        content.classList.remove('hidden');
+                        content.classList.add('animate-fade-in');
+                    } else {
+                        content.classList.add('hidden');
+                        content.classList.remove('animate-fade-in');
+                    }
+                });
+            });
+        });
+
+        // 监听暗色模式变化
+        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleDarkModeChange = (e) => {
+            const background = document.querySelector('.section-background');
+            if (e.matches) {
+                background.classList.remove('from-indigo-50', 'to-purple-50');
+                background.classList.add('from-indigo-900', 'to-purple-900');
+            } else {
+                background.classList.remove('from-indigo-900', 'to-purple-900');
+                background.classList.add('from-indigo-50', 'to-purple-50');
+            }
+        };
+        
+        darkModeMediaQuery.addListener(handleDarkModeChange);
+        handleDarkModeChange(darkModeMediaQuery);
+
+        // 清理函数
+        return () => {
+            darkModeMediaQuery.removeListener(handleDarkModeChange);
+            tabButtons.forEach(button => {
+                button.removeEventListener('click');
+            });
+        };
+    })();
+</script> 

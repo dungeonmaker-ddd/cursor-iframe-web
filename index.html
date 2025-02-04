@@ -1,357 +1,298 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="scroll-smooth">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人作品集 | Portfolio</title>
-    <!-- Favicon -->
+    <title>Cursor Web</title>
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👨‍💻</text></svg>">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Iconify -->
-    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <!-- GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- 关键样式优先加载 -->
     <style>
-        .sidebar {
-            transition: all 0.3s ease-in-out;
-            backdrop-filter: blur(8px);
-            background-color: transparent;
-        }
-        .sidebar.collapsed {
-            transform: translateX(-100%);
-        }
-        .sidebar-item {
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        .sidebar-item::before {
-            content: '';
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            width: 0.5rem;
-            height: 1px;
-            background-color: #94a3b8;
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-        .sidebar-item:hover::before {
-            opacity: 1;
-            width: 1rem;
-        }
-        .sidebar-submenu {
-            margin-left: 1rem;
-            border-left: 1px dashed #94a3b8;
-            padding-left: 1rem;
-        }
-        @media (min-width: 1024px) {
-            .main-content {
-                width: 100vw;
-                margin-left: 0;
-            }
-        }
-        .floating-button {
-            transition: all 0.3s ease;
-        }
-        .floating-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        .ascii-art {
-            font-family: monospace;
-            white-space: pre;
-            font-size: 12px;
-            line-height: 1;
-            color: #1e40af;
-            opacity: 0.1;
-            user-select: none;
+        .preload-container {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 0;
-            transform: rotate(-10deg);
-        }
-        .page-section {
-            min-height: 100vh;
-            height: 100vh;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-            position: relative;
-            transform-style: preserve-3d;
-            will-change: transform;
-        }
-        .scroll-container {
-            scroll-snap-type: y mandatory;
-            height: 100vh;
-            width: 100vw;
-            overflow-y: auto;
-            scroll-behavior: smooth;
-            position: relative;
-            perspective: 1px;
-            transform-style: preserve-3d;
-            -webkit-overflow-scrolling: touch;
-        }
-        .scroll-container::-webkit-scrollbar {
-            width: 8px;
-        }
-        .scroll-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .scroll-container::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-        }
-        .scroll-container::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(0, 0, 0, 0.2);
-        }
-        .section-content {
-            min-height: 100vh;
-            padding-top: 0;
-            position: relative;
-            z-index: 1;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-        }
-        .section-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 0;
-        }
-        @media (prefers-color-scheme: dark) {
-            .ascii-art {
-                color: #60a5fa;
-            }
-        }
-        .header-expanded {
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
-        .header-content {
-            height: 0;
-            overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .header-expanded .header-content {
-            height: calc(100vh - 4rem);
-        }
-        .nav-link {
-            position: relative;
-            display: inline-block;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background-color: currentColor;
-            transition: width 0.3s ease;
-        }
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        #main-header {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            width: 2.5rem;
-            height: 2.5rem;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 9999px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        #main-header:hover {
-            width: min(90vw, 40rem);
-            height: 2.5rem;
-            border-radius: 1.25rem;
-        }
-        .header-trigger {
-            width: 2.5rem;
-            height: 2.5rem;
+            inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            position: absolute;
-            right: 0;
-            top: 0;
-            z-index: 2;
-        }
-        .header-content {
-            position: absolute;
-            top: 0;
-            right: 2.5rem;
-            height: 100%;
-            padding: 0 1.5rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-        }
-        #main-header:hover .header-content {
+            background: #f9fafb;
             opacity: 1;
-            visibility: visible;
+            transition: opacity 0.3s;
+            min-height: 100vh;
+            min-width: 100vw;
         }
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
+        .preload-container.fade-out {
+            opacity: 0;
+            pointer-events: none;
         }
-        .nav-link {
-            color: white;
+        
+        /* 齿轮动画样式 */
+        .gear-container {
             position: relative;
-            display: inline-flex;
+            width: 120px;
+            height: 120px;
+            display: flex;
             align-items: center;
-            transform: translateX(20px);
+            justify-content: center;
+            margin: 0 auto;
+        }
+        .gear {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-origin: center center;
+        }
+        .gear::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            border: 12px solid #3b82f6;
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+            animation: gearRotate1 3s linear infinite;
+        }
+        .gear::after {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            border: 12px solid #3b82f6;
+            border-left-color: transparent;
+            border-right-color: transparent;
+            animation: gearRotate2 3s linear infinite;
+        }
+        .gear-inner {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: #f9fafb;
+            border-radius: 50%;
+            z-index: 2;
+            inset: 0;
+            margin: auto;
+        }
+        .gear-teeth {
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 100%;
+            height: 100%;
+            animation: gearRotate1 3s linear infinite;
+        }
+        .gear-tooth {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: #3b82f6;
+            transform-origin: center 40px;
+            border-radius: 2px;
+            left: calc(50% - 7px);
+            top: -7px;
+        }
+        @keyframes gearRotate1 {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes gearRotate2 {
+            0% { transform: rotate(90deg); }
+            100% { transform: rotate(450deg); }
+        }
+        
+        /* 生成12个齿 */
+        .gear-tooth:nth-child(1) { transform: rotate(0deg); }
+        .gear-tooth:nth-child(2) { transform: rotate(30deg); }
+        .gear-tooth:nth-child(3) { transform: rotate(60deg); }
+        .gear-tooth:nth-child(4) { transform: rotate(90deg); }
+        .gear-tooth:nth-child(5) { transform: rotate(120deg); }
+        .gear-tooth:nth-child(6) { transform: rotate(150deg); }
+        .gear-tooth:nth-child(7) { transform: rotate(180deg); }
+        .gear-tooth:nth-child(8) { transform: rotate(210deg); }
+        .gear-tooth:nth-child(9) { transform: rotate(240deg); }
+        .gear-tooth:nth-child(10) { transform: rotate(270deg); }
+        .gear-tooth:nth-child(11) { transform: rotate(300deg); }
+        .gear-tooth:nth-child(12) { transform: rotate(330deg); }
+
+        /* 加载文字动画 */
+        .loading-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-align: center;
+        }
+        .loading-text {
+            margin-top: 2rem;
+            font-size: 1rem;
+            color: #3b82f6;
+            opacity: 0.8;
+            text-align: center;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            width: 100%;
+        }
+        .loading-text::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80% { content: '...'; }
+        }
+
+        #app-container {
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: opacity 0.3s;
         }
-        .nav-link iconify-icon {
-            margin-right: 0.5rem;
-            font-size: 1.25rem;
-        }
-        #main-header:hover .nav-link {
-            transform: translateX(0);
+        #app-container.show {
             opacity: 1;
-        }
-        #main-header:hover .nav-link:nth-child(1) { transition-delay: 0.1s; }
-        #main-header:hover .nav-link:nth-child(2) { transition-delay: 0.15s; }
-        #main-header:hover .nav-link:nth-child(3) { transition-delay: 0.2s; }
-        #main-header:hover .nav-link:nth-child(4) { transition-delay: 0.25s; }
-        #main-header:hover .nav-link:nth-child(5) { transition-delay: 0.3s; }
-        .nav-divider {
-            width: 1px;
-            height: 1rem;
-            background-color: rgba(255, 255, 255, 0.2);
-            margin: 0 0.5rem;
-        }
-        .nav-link {
-            @apply block px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-500 transition-colors;
-        }
-        #app-container[data-loading-state="loading"] .loading-indicator {
-            @apply opacity-100 visible;
-        }
-        .loading-indicator {
-            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- ASCII艺术装饰 -->
-    <div class="ascii-art" aria-hidden="true">
-        // ... existing ascii art ...
-    </div>
-
-    <!-- 顶部导航栏 -->
-    <div id="header"></div>
-
-    <!-- 侧边栏 -->
-    <div id="aside"></div>
-
-    <!-- 主要内容区 -->
-    <div id="main"></div>
-
-    <!-- 悬浮按钮组 -->
-    <div id="floating-buttons"></div>
-
-    <!-- 应用容器 -->
-    <div id="app-container" class="min-h-screen transition-all duration-500">
-        <!-- 加载状态 -->
-        <div class="loading-indicator fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50 opacity-0 invisible">
-            <div class="text-center">
-                <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                <p class="text-gray-600">加载中...</p>
+<body>
+    <!-- 预加载动画 -->
+    <div id="preload" class="preload-container">
+        <div class="loading-wrapper">
+            <div class="gear-container">
+                <div class="gear">
+                    <div class="gear-inner"></div>
+                    <div class="gear-teeth">
+                        <div class="gear-tooth"></div>
+                        <div class="gear-tooth"></div>
+                        <div class="gear-tooth"></div>
+                        <div class="gear-tooth"></div>
+                        <div class="gear-tooth"></div>
+                        <div class="gear-tooth"></div>
+                        <div class="gear-tooth"></div>
+                        <div class="gear-tooth"></div>
+                        <div class="gear-tooth"></div>
+                        <div class="gear-tooth"></div>
+                        <div class="gear-tooth"></div>
+                        <div class="gear-tooth"></div>
+                    </div>
+                </div>
             </div>
+            <div class="loading-text">加载中</div>
         </div>
     </div>
 
+    <!-- 应用容器 -->
+    <div id="app-container"></div>
+
+    <!-- 资源加载和初始化 -->
     <script>
-        // 辅助函数：从HTML字符串中提取并执行脚本
-        function extractAndExecuteScripts(html, container) {
-            // 创建临时容器解析HTML
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-            
-            // 提取所有脚本
-            const scripts = temp.getElementsByTagName('script');
-            const scriptContents = Array.from(scripts).map(script => {
-                // 移除script标签,这样不会出现在innerHTML中
-                script.remove();
-                return script.textContent;
-            });
-            
-            // 设置DOM内容(不包含脚本)
-            container.innerHTML = temp.innerHTML;
-            
-            // 执行所有脚本
-            scriptContents.forEach(scriptContent => {
-                const newScript = document.createElement('script');
-                newScript.textContent = scriptContent;
-                container.appendChild(newScript);
-            });
-        }
+        // 资源加载器
+        async function loadResources() {
+            const resources = [
+                { type: 'script', url: 'https://cdn.tailwindcss.com' },
+                { type: 'script', url: 'https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js' },
+                { type: 'script', url: 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js' },
+                { type: 'script', url: 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js' }
+            ];
 
-        // 页面加载完成后的初始化
-        document.addEventListener('DOMContentLoaded', () => {
-            // 加载顶部导航栏
-            fetch('components/header.html')
-                .then(response => response.text())
-                .then(html => {
-                    const container = document.getElementById('header');
-                    extractAndExecuteScripts(html, container);
-                })
-                .catch(error => console.error('Error loading header:', error));
-
-            // 加载侧边栏
-            fetch('components/aside.html')
-                .then(response => response.text())
-                .then(html => {
-                    const container = document.getElementById('aside');
-                    extractAndExecuteScripts(html, container);
-                })
-                .catch(error => console.error('Error loading aside:', error));
-
-            // 加载主要内容
-            fetch('components/main.html')
-                .then(response => response.text())
-                .then(html => {
-                    const container = document.getElementById('main');
-                    extractAndExecuteScripts(html, container);
-                })
-                .catch(error => console.error('Error loading main:', error));
-
-            // 加载悬浮按钮
-            fetch('components/floating-buttons.html')
-                .then(response => response.text())
-                .then(html => {
-                    const container = document.getElementById('floating-buttons');
-                    extractAndExecuteScripts(html, container);
-                })
-                .catch(error => console.error('Error loading floating buttons:', error));
-
-            // 监听滚动事件
-            const mainScroll = document.getElementById('main-scroll');
-            if (mainScroll) {
-                mainScroll.addEventListener('scroll', () => {
-                    const backToTopButton = document.getElementById('back-to-top');
-                    if (backToTopButton) {
-                        backToTopButton.style.display = mainScroll.scrollTop > 300 ? 'flex' : 'none';
+            const loadPromises = resources.map(resource => {
+                return new Promise((resolve, reject) => {
+                    const elem = document.createElement(resource.type);
+                    elem.onload = resolve;
+                    elem.onerror = reject;
+                    if (resource.type === 'script') {
+                        elem.src = resource.url;
+                        document.body.appendChild(elem);
+                    } else if (resource.type === 'style') {
+                        elem.href = resource.url;
+                        elem.rel = 'stylesheet';
+                        document.head.appendChild(elem);
                     }
                 });
+            });
+
+            try {
+                await Promise.all(loadPromises);
+                console.log('所有资源加载完成');
+            } catch (error) {
+                console.error('资源加载失败:', error);
+                throw error;
             }
-        });
+        }
+
+        // 主函数
+        async function init() {
+            try {
+                // 记录开始时间
+                const startTime = Date.now();
+
+                // 1. 先加载外部资源
+                await loadResources();
+
+                // 2. 加载 App 组件
+                const response = await fetch('App.html');
+                const html = await response.text();
+                
+                // 3. 解析并应用
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // 4. 应用样式
+                doc.querySelectorAll('style').forEach(style => {
+                    document.head.appendChild(style.cloneNode(true));
+                });
+                
+                // 5. 设置内容
+                const appContainer = document.getElementById('app-container');
+                appContainer.innerHTML = doc.body.innerHTML;
+                
+                // 6. 执行App组件的脚本
+                doc.querySelectorAll('script').forEach(script => {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = script.textContent;
+                    document.body.appendChild(newScript);
+                });
+
+                // 计算已经过去的时间
+                const elapsedTime = Date.now() - startTime;
+                const minLoadingTime = 1500; // 最小加载时间 1.5 秒
+
+                // 如果加载时间不足1.5秒，等待剩余时间
+                if (elapsedTime < minLoadingTime) {
+                    await new Promise(resolve => setTimeout(resolve, minLoadingTime - elapsedTime));
+                }
+                
+                // 7. 淡出预加载动画，显示应用
+                document.getElementById('preload').classList.add('fade-out');
+                appContainer.classList.add('show');
+                
+                // 8. 清理预加载动画
+                setTimeout(() => {
+                    document.getElementById('preload').remove();
+                }, 300);
+
+            } catch (error) {
+                console.error('加载失败:', error);
+                document.getElementById('app-container').innerHTML = `
+                    <div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#ef4444;">
+                        加载失败: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // 启动
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     </script>
 </body>
 </html> 

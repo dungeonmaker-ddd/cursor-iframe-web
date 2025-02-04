@@ -1,0 +1,146 @@
+<!-- App 组件 -->
+<style>
+    .main-content {
+        width: 100vw;
+        margin-left: 0;
+    }
+    .ascii-art {
+        font-family: monospace;
+        white-space: pre;
+        font-size: 12px;
+        line-height: 1;
+        color: #1e40af;
+        opacity: 0.1;
+        user-select: none;
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 0;
+        transform: rotate(-10deg);
+    }
+    .page-section {
+        min-height: 100vh;
+        height: 100vh;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+        position: relative;
+        transform-style: preserve-3d;
+        will-change: transform;
+    }
+    .scroll-container {
+        scroll-snap-type: y mandatory;
+        height: 100vh;
+        width: 100vw;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        position: relative;
+        perspective: 1px;
+        transform-style: preserve-3d;
+        -webkit-overflow-scrolling: touch;
+    }
+    .scroll-container::-webkit-scrollbar {
+        width: 8px;
+    }
+    .scroll-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .scroll-container::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+    }
+    .scroll-container::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+    .section-content {
+        min-height: 100vh;
+        padding-top: 0;
+        position: relative;
+        z-index: 1;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+    .section-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+    }
+    @media (prefers-color-scheme: dark) {
+        .ascii-art {
+            color: #60a5fa;
+        }
+    }
+</style>
+
+<div class="app-wrapper bg-gray-50 min-h-screen">
+    <!-- ASCII艺术装饰 -->
+    <div class="ascii-art" aria-hidden="true">
+        // ... existing ascii art ...
+    </div>
+
+    <!-- 组件容器 -->
+    <div class="components-container relative">
+        <!-- 顶部导航栏 -->
+        <div id="header"></div>
+
+        <!-- 侧边栏 -->
+        <div id="aside"></div>
+
+        <!-- 主要内容区 -->
+        <div id="main"></div>
+
+        <!-- 悬浮按钮组 -->
+        <div id="floating-buttons"></div>
+    </div>
+</div>
+
+<script>
+    // 立即执行的函数表达式(IIFE)来初始化App组件
+    (function initApp() {
+        // 加载组件函数
+        async function loadComponent(id, path) {
+            try {
+                const response = await fetch(path);
+                const html = await response.text();
+                const container = document.getElementById(id);
+                if (container) {
+                    container.innerHTML = html;
+                    // 执行组件中的脚本
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const scripts = doc.getElementsByTagName('script');
+                    Array.from(scripts).forEach(script => {
+                        const newScript = document.createElement('script');
+                        newScript.textContent = script.textContent;
+                        document.body.appendChild(newScript);
+                    });
+                }
+            } catch (error) {
+                console.error(`Error loading component ${id}:`, error);
+            }
+        }
+
+        // 加载所有组件
+        Promise.all([
+            loadComponent('header', 'components/header.html'),
+            loadComponent('aside', 'components/aside.html'),
+            loadComponent('main', 'components/main.html'),
+            loadComponent('floating-buttons', 'components/floating-buttons.html')
+        ]).catch(error => {
+            console.error('Error loading components:', error);
+        });
+
+        // 监听滚动事件
+        const mainScroll = document.getElementById('main-scroll');
+        if (mainScroll) {
+            mainScroll.addEventListener('scroll', () => {
+                const backToTopButton = document.getElementById('back-to-top');
+                if (backToTopButton) {
+                    backToTopButton.style.display = mainScroll.scrollTop > 300 ? 'flex' : 'none';
+                }
+            });
+        }
+    })();
+</script> 

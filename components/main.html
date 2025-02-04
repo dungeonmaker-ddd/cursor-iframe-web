@@ -1,338 +1,972 @@
+<!-- 主要内容区样式 -->
+<style>
+    /* 自定义动画 */
+    @keyframes main-fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes main-fade-in-up {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes main-typewriter {
+        from { width: 0; }
+        to { width: 100%; }
+    }
+    
+    @keyframes main-slow-bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes main-rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    @keyframes main-dash {
+        0% {
+            stroke-dashoffset: 128;
+        }
+        50% {
+            stroke-dashoffset: 32;
+        }
+        100% {
+            stroke-dashoffset: 128;
+        }
+    }
+
+    @keyframes main-loading-dots {
+        0%, 100% { transform: translateY(0); opacity: 0.3; }
+        50% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    @keyframes main-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .main-animate-fade-in {
+        animation: main-fade-in 1s ease-out forwards;
+    }
+    
+    .main-animate-fade-in-up {
+        animation: main-fade-in-up 1s ease-out forwards;
+    }
+    
+    .main-typewriter-text {
+        overflow: hidden;
+        white-space: nowrap;
+        border-right: 2px solid #3b82f6;
+        width: 0;
+        animation: main-typewriter 3s steps(40) forwards;
+    }
+    
+    .main-animate-bounce-slow {
+        animation: main-slow-bounce 2s ease-in-out infinite;
+    }
+
+    /* 主内容区特有样式 */
+    .main-scroll-container {
+        scroll-snap-type: y mandatory;
+        height: 100vh;
+        width: 100vw;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        position: relative;
+        perspective: 1px;
+        transform-style: preserve-3d;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .main-scroll-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .main-scroll-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .main-scroll-container::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+    }
+
+    .main-scroll-container::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .main-page-section {
+        min-height: 100vh;
+        height: 100vh;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+        position: relative;
+        transform-style: preserve-3d;
+        will-change: transform;
+        overflow: hidden;  /* 确保内容不会溢出 */
+    }
+
+    .main-section-content {
+        min-height: 100vh;
+        padding-top: 0;
+        position: relative;
+        z-index: 1;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+
+    .main-section-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .main-section-background {
+            background: linear-gradient(to bottom right, #1e293b, #0f172a);
+        }
+        .text-gray-600 {
+            color: #94a3b8;
+        }
+        .main-scroll-container::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .main-scroll-container::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    }
+
+    /* 页面切换动画 */
+    .main-page-transition {
+        transition: opacity 0.3s ease;
+    }
+
+    .main-page-transition.fade-out {
+        opacity: 0;
+    }
+
+    .main-page-transition.fade-in {
+        opacity: 1;
+    }
+
+    /* 导航指示器 */
+    .main-page-indicator {
+        position: fixed;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .main-indicator-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .main-indicator-dot.active {
+        background-color: #3b82f6;
+        transform: scale(1.2);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .main-indicator-dot {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .main-indicator-dot.active {
+            background-color: #60a5fa;
+        }
+    }
+
+    /* 加载动画样式 */
+    .main-loading-placeholder {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 100;
+        isolation: isolate;
+    }
+
+    .main-loading-spinner {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        visibility: visible;
+        pointer-events: all;
+    }
+
+    .main-loading-spinner svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        animation: main-rotate 2s linear infinite;
+        visibility: visible;
+        pointer-events: all;
+    }
+
+    .main-loading-spinner circle {
+        fill: transparent;
+        stroke: #ef4444;
+        stroke-width: 8;
+        stroke-linecap: round;
+        stroke-dasharray: 128;
+        stroke-dashoffset: 128;
+        transform-origin: center;
+        animation: main-dash 2s ease infinite;
+    }
+
+    .main-loading-text {
+        margin-top: 30px;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ef4444;
+        text-align: center;
+    }
+
+    .main-content-fade {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        position: relative;
+        min-height: 100vh;
+    }
+
+    .main-content-fade.loaded {
+        opacity: 1;
+    }
+
+    /* loading样式 */
+    #main-loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 100;
+    }
+
+    /* section相关样式 */
+    .main-page-section {
+        min-height: 100vh;
+        height: 100vh;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+        position: relative;
+        transform-style: preserve-3d;
+        will-change: transform;
+        overflow: hidden;  /* 确保内容不会溢出 */
+    }
+
+    .main-section-content {
+        min-height: 100vh;
+        padding-top: 0;
+        position: relative;
+        z-index: 1;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+
+    /* section loading样式 */
+    .main-section-loading {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        opacity: 1;
+        transition: all 0.15s ease;
+        pointer-events: auto;
+        visibility: visible;
+    }
+
+    .main-section-loading.hidden {
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+        transform: scale(0.98);
+    }
+
+    .main-section-content {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .main-section-content.loaded {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .main-loading-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* 齿轮动画样式 */
+    .main-gear-container {
+        position: relative;
+        width: 180px;
+        height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    .main-gear {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        background: #3b82f6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform-origin: center center;
+    }
+
+    .main-gear::before {
+        content: '';
+        position: absolute;
+        inset: -15px;
+        border-radius: 50%;
+        border: 16px solid #3b82f6;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        animation: main-gear-rotate1 2s linear infinite;  /* 加快齿轮旋转 */
+    }
+
+    .main-gear::after {
+        content: '';
+        position: absolute;
+        inset: -15px;
+        border-radius: 50%;
+        border: 16px solid #3b82f6;
+        border-left-color: transparent;
+        border-right-color: transparent;
+        animation: main-gear-rotate2 2s linear infinite;  /* 加快齿轮旋转 */
+    }
+
+    .main-gear-inner {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: #f8fafc;
+        border: 2px solid #3b82f6;
+        border-radius: 50%;
+        z-index: 2;
+        inset: 0;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #3b82f6;
+        font-size: 1.8rem;
+        box-shadow: inset 0 2px 4px rgba(59, 130, 246, 0.1);
+    }
+
+    .main-gear-teeth {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 100%;
+        height: 100%;
+        animation: main-gear-rotate1 2s linear infinite;  /* 加快齿轮旋转 */
+    }
+
+    .main-gear-tooth {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #3b82f6;
+        transform-origin: center 60px;
+        border-radius: 3px;
+        left: calc(50% - 10px);
+        top: -10px;
+    }
+
+    @keyframes main-gear-rotate1 {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes main-gear-rotate2 {
+        0% { transform: rotate(90deg); }
+        100% { transform: rotate(450deg); }
+    }
+
+    /* 生成12个齿 */
+    .main-gear-tooth:nth-child(1) { transform: rotate(0deg); }
+    .main-gear-tooth:nth-child(2) { transform: rotate(30deg); }
+    .main-gear-tooth:nth-child(3) { transform: rotate(60deg); }
+    .main-gear-tooth:nth-child(4) { transform: rotate(90deg); }
+    .main-gear-tooth:nth-child(5) { transform: rotate(120deg); }
+    .main-gear-tooth:nth-child(6) { transform: rotate(150deg); }
+    .main-gear-tooth:nth-child(7) { transform: rotate(180deg); }
+    .main-gear-tooth:nth-child(8) { transform: rotate(210deg); }
+    .main-gear-tooth:nth-child(9) { transform: rotate(240deg); }
+    .main-gear-tooth:nth-child(10) { transform: rotate(270deg); }
+    .main-gear-tooth:nth-child(11) { transform: rotate(300deg); }
+    .main-gear-tooth:nth-child(12) { transform: rotate(330deg); }
+
+    .main-loading-text {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #3b82f6;
+        letter-spacing: 0.1em;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .main-loading-dots {
+        display: inline-flex;
+        gap: 0.25rem;
+    }
+
+    .main-loading-dot {
+        width: 4px;
+        height: 4px;
+        background-color: #3b82f6;
+        border-radius: 50%;
+        animation: main-loading-dots 1s infinite;
+    }
+
+    .main-loading-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .main-loading-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    /* 移除所有section的渐变背景 */
+    #home .main-section-loading,
+    #skills .main-section-loading,
+    #projects .main-section-loading,
+    #about .main-section-loading {
+        background: none;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .main-section-loading {
+            background: none;
+        }
+        #home .main-section-loading,
+        #skills .main-section-loading,
+        #projects .main-section-loading,
+        #about .main-section-loading {
+            background: none;
+        }
+        .main-gear-inner {
+            background: #1e293b;
+            border-color: #60a5fa;
+            color: #60a5fa;
+            box-shadow: inset 0 2px 4px rgba(96, 165, 250, 0.1);
+        }
+    }
+
+    .main-brand-icon {
+        font-size: 2.5rem;
+        color: currentColor;
+        animation: main-pulse 2s ease-in-out infinite;
+    }
+
+    #home .main-brand-icon {
+        color: #3b82f6;
+    }
+
+    #skills .main-brand-icon {
+        color: #2563eb;
+    }
+
+    #projects .main-brand-icon {
+        color: #4f46e5;
+    }
+
+    #about .main-brand-icon {
+        color: #7c3aed;
+    }
+
+    .main-loading-text {
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #e5e7eb;
+        letter-spacing: 0.05em;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .main-loading-dots {
+        display: flex;
+        gap: 0.25rem;
+    }
+
+    .main-loading-dot {
+        width: 4px;
+        height: 4px;
+        background-color: currentColor;
+        border-radius: 50%;
+        animation: main-loading-dots 1.4s infinite;
+    }
+
+    #home .main-loading-dot {
+        color: #3b82f6;
+    }
+
+    #skills .main-loading-dot {
+        color: #2563eb;
+    }
+
+    #projects .main-loading-dot {
+        color: #4f46e5;
+    }
+
+    #about .main-loading-dot {
+        color: #7c3aed;
+    }
+
+    .main-loading-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .main-loading-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+</style>
+
+<!-- 页面指示器 -->
+<div class="main-page-indicator">
+    <div class="main-indicator-dot active" data-section="home"></div>
+    <div class="main-indicator-dot" data-section="skills"></div>
+    <div class="main-indicator-dot" data-section="projects"></div>
+    <div class="main-indicator-dot" data-section="about"></div>
+</div>
+
 <!-- 主要内容区 -->
-<main class="scroll-container main-content" id="main-scroll">
-    <!-- 第一页 - 留白页 -->
-    <section id="home" class="page-section">
-        <div class="section-background bg-gradient-to-br from-blue-50 to-indigo-50"></div>
-        <div class="section-content flex items-center justify-center">
-            <!-- 暂时留白，等待设计 -->
+<main class="main-scroll-container main-content" id="main-scroll">
+    <!-- 动态加载子页面容器 -->
+    <div id="sub-app-container">
+        <!-- 首页 -->
+    <section id="home" class="main-page-section">
+        <div class="main-section-background bg-gradient-to-br from-blue-50 to-indigo-50"></div>
+        <div class="main-section-loading">
+            <div class="main-loading-container">
+                <div class="main-gear-container">
+                    <div class="main-gear">
+                        <div class="main-gear-inner">
+                            <iconify-icon icon="ri:home-6-line"></iconify-icon>
+                        </div>
+                        <div class="main-gear-teeth">
+                            <div class="main-gear-tooth"></div>
+                            <div class="main-gear-tooth"></div>
+                            <div class="main-gear-tooth"></div>
+                            <div class="main-gear-tooth"></div>
+                            <div class="main-gear-tooth"></div>
+                            <div class="main-gear-tooth"></div>
+                            <div class="main-gear-tooth"></div>
+                            <div class="main-gear-tooth"></div>
+                            <div class="main-gear-tooth"></div>
+                            <div class="main-gear-tooth"></div>
+                            <div class="main-gear-tooth"></div>
+                            <div class="main-gear-tooth"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-section-content content-fade">
+            <!-- 内容将在这里加载 -->
         </div>
     </section>
 
-    <!-- 第二页 - 主要内容 -->
-    <section id="main-content" class="page-section">
-        <div class="section-content">
-            <!-- 编程语言展示 -->
-            <div id="languages" class="min-h-screen flex items-center">
-                <div class="container mx-auto px-4 py-16">
-                    <h2 class="text-3xl font-bold text-center mb-12">技术栈</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        <!-- Python -->
-                        <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform">
-                            <div class="flex items-center space-x-4 mb-4">
-                                <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-blue-100">
-                                    <iconify-icon icon="logos:python" width="32"></iconify-icon>
-                                </div>
-                                <h3 class="text-xl font-semibold">Python</h3>
+        <!-- 技能展示 -->
+        <section id="skills" class="main-page-section">
+            <div class="main-section-background bg-gradient-to-br from-gray-50 to-blue-50"></div>
+            <div class="main-section-loading">
+                <div class="main-loading-container">
+                    <div class="main-gear-container">
+                        <div class="main-gear">
+                            <div class="main-gear-inner">
+                                <iconify-icon icon="ri:tools-line"></iconify-icon>
                             </div>
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">Web开发</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-4/5 h-full bg-blue-500"></div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">数据分析</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-11/12 h-full bg-blue-500"></div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">机器学习</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-3/4 h-full bg-blue-500"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- JavaScript -->
-                        <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform">
-                            <div class="flex items-center space-x-4 mb-4">
-                                <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-yellow-100">
-                                    <iconify-icon icon="logos:javascript" width="32"></iconify-icon>
-                                </div>
-                                <h3 class="text-xl font-semibold">JavaScript</h3>
-                            </div>
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">前端开发</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-11/12 h-full bg-yellow-500"></div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">Node.js</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-4/5 h-full bg-yellow-500"></div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">React/Vue</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-9/12 h-full bg-yellow-500"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Java -->
-                        <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform">
-                            <div class="flex items-center space-x-4 mb-4">
-                                <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-red-100">
-                                    <iconify-icon icon="logos:java" width="32"></iconify-icon>
-                                </div>
-                                <h3 class="text-xl font-semibold">Java</h3>
-                            </div>
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">Spring Boot</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-10/12 h-full bg-red-500"></div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">微服务</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-4/5 h-full bg-red-500"></div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">并发编程</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-3/4 h-full bg-red-500"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Go -->
-                        <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform">
-                            <div class="flex items-center space-x-4 mb-4">
-                                <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-blue-100">
-                                    <iconify-icon icon="logos:go" width="32"></iconify-icon>
-                                </div>
-                                <h3 class="text-xl font-semibold">Go</h3>
-                            </div>
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">后端服务</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-4/5 h-full bg-blue-500"></div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">系统编程</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-3/5 h-full bg-blue-500"></div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">云原生</span>
-                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div class="w-7/12 h-full bg-blue-500"></div>
-                                    </div>
-                                </div>
+                            <div class="main-gear-teeth">
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- 作品与博客展示 -->
-            <div class="min-h-screen">
-                <!-- 内容分类选项卡 -->
-                <div class="container mx-auto px-4 py-8">
-                    <div class="flex flex-wrap gap-4 justify-center mb-8" id="content-tabs">
-                        <button class="px-6 py-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors active" data-tab="projects">作品展示</button>
-                        <button class="px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors" data-tab="blog">技术博客</button>
+            <div class="main-section-content content-fade">
+                <!-- 内容将在这里加载 -->
                     </div>
-                </div>
+        </section>
 
-                <!-- 作品展示区域 -->
-                <div id="projects-content" class="tab-content">
-                    <main class="container mx-auto px-4 py-8">
-                        <div id="projects" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <!-- Python项目卡片 -->
-                            <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1 duration-300">
-                                <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 relative overflow-hidden">
-                                    <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
-                                        <iconify-icon icon="logos:python"></iconify-icon>
-                                    </div>
-                                    <span class="absolute top-4 right-4 px-3 py-1 bg-blue-500 text-white rounded-full text-sm">Python</span>
-                                </div>
-                                <div class="p-6">
-                                    <h3 class="text-xl font-semibold mb-2">数据分析平台</h3>
-                                    <p class="text-gray-600 mb-4">基于Python的数据分析和可视化平台，支持多种数据源和图表类型。</p>
-                                    <div class="flex items-center space-x-4">
-                                        <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
-                                            <iconify-icon icon="carbon:logo-github" class="mr-1"></iconify-icon>
-                                            源码
-                                        </a>
-                                        <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
-                                            <iconify-icon icon="carbon:launch" class="mr-1"></iconify-icon>
-                                            演示
-                                        </a>
-                                    </div>
-                                </div>
+        <!-- 项目展示 -->
+        <section id="projects" class="main-page-section">
+            <div class="main-section-background bg-gradient-to-br from-indigo-50 to-purple-50"></div>
+            <div class="main-section-loading">
+                <div class="main-loading-container">
+                    <div class="main-gear-container">
+                        <div class="main-gear">
+                            <div class="main-gear-inner">
+                                <iconify-icon icon="ri:folder-line"></iconify-icon>
                             </div>
-
-                            <!-- JavaScript项目卡片 -->
-                            <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1 duration-300">
-                                <div class="h-48 bg-gradient-to-br from-yellow-400 to-orange-500 relative overflow-hidden">
-                                    <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
-                                        <iconify-icon icon="logos:javascript"></iconify-icon>
-                                    </div>
-                                    <span class="absolute top-4 right-4 px-3 py-1 bg-yellow-500 text-white rounded-full text-sm">JavaScript</span>
-                                </div>
-                                <div class="p-6">
-                                    <h3 class="text-xl font-semibold mb-2">在线协作工具</h3>
-                                    <p class="text-gray-600 mb-4">基于WebSocket的实时协作平台，支持多人同时编辑和即时通讯。</p>
-                                    <div class="flex items-center space-x-4">
-                                        <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
-                                            <iconify-icon icon="carbon:logo-github" class="mr-1"></iconify-icon>
-                                            源码
-                                        </a>
-                                        <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
-                                            <iconify-icon icon="carbon:launch" class="mr-1"></iconify-icon>
-                                            演示
-                                        </a>
-                                    </div>
-                                </div>
+                            <div class="main-gear-teeth">
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
                             </div>
-
-                            <!-- Java项目卡片 -->
-                            <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1 duration-300">
-                                <div class="h-48 bg-gradient-to-br from-red-500 to-pink-600 relative overflow-hidden">
-                                    <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
-                                        <iconify-icon icon="logos:java"></iconify-icon>
-                                    </div>
-                                    <span class="absolute top-4 right-4 px-3 py-1 bg-red-500 text-white rounded-full text-sm">Java</span>
-                                </div>
-                                <div class="p-6">
-                                    <h3 class="text-xl font-semibold mb-2">微服务框架</h3>
-                                    <p class="text-gray-600 mb-4">基于Spring Cloud的微服务架构实现，包含服务发现、配置中心等功能。</p>
-                                    <div class="flex items-center space-x-4">
-                                        <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
-                                            <iconify-icon icon="carbon:logo-github" class="mr-1"></iconify-icon>
-                                            源码
-                                        </a>
-                                        <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center">
-                                            <iconify-icon icon="carbon:launch" class="mr-1"></iconify-icon>
-                                            演示
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-                </div>
-
-                <!-- 博客文章区域 -->
-                <div id="blog-content" class="tab-content hidden">
-                    <main class="container mx-auto px-4 py-8">
-                        <div id="blog" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <!-- 博客文章卡片 -->
-                            <article class="bg-white rounded-lg shadow-md overflow-hidden">
-                                <div class="h-48 bg-gradient-to-br from-green-400 to-blue-500 relative overflow-hidden">
-                                    <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
-                                        <iconify-icon icon="carbon:article"></iconify-icon>
-                                    </div>
-                                    <span class="absolute top-4 right-4 px-3 py-1 bg-blue-500 text-white rounded-full text-sm">技术分享</span>
-                                </div>
-                                <div class="p-6">
-                                    <h3 class="text-xl font-semibold mb-2">深入理解Python异步编程</h3>
-                                    <p class="text-gray-600 mb-4">探讨Python中的异步编程模型，包括协程、事件循环和异步IO的实现原理...</p>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm text-gray-500">2024-02-01</span>
-                                        <a href="#" class="text-blue-600 hover:text-blue-800">阅读更多</a>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="bg-white rounded-lg shadow-md overflow-hidden">
-                                <div class="h-48 bg-gradient-to-br from-purple-400 to-pink-500 relative overflow-hidden">
-                                    <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
-                                        <iconify-icon icon="carbon:article"></iconify-icon>
-                                    </div>
-                                    <span class="absolute top-4 right-4 px-3 py-1 bg-purple-500 text-white rounded-full text-sm">架构设计</span>
-                                </div>
-                                <div class="p-6">
-                                    <h3 class="text-xl font-semibold mb-2">微服务架构实践指南</h3>
-                                    <p class="text-gray-600 mb-4">分享在实际项目中使用微服务架构的经验，包括服务拆分、通信和部署策略...</p>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm text-gray-500">2024-01-28</span>
-                                        <a href="#" class="text-blue-600 hover:text-blue-800">阅读更多</a>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="bg-white rounded-lg shadow-md overflow-hidden">
-                                <div class="h-48 bg-gradient-to-br from-yellow-400 to-orange-500 relative overflow-hidden">
-                                    <div class="absolute inset-0 flex items-center justify-center text-white text-6xl opacity-30">
-                                        <iconify-icon icon="carbon:article"></iconify-icon>
-                                    </div>
-                                    <span class="absolute top-4 right-4 px-3 py-1 bg-yellow-500 text-white rounded-full text-sm">前端开发</span>
-                                </div>
-                                <div class="p-6">
-                                    <h3 class="text-xl font-semibold mb-2">现代前端工程化实践</h3>
-                                    <p class="text-gray-600 mb-4">探讨现代前端开发中的工程化实践，包括构建工具、性能优化和自动化测试...</p>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm text-gray-500">2024-01-25</span>
-                                        <a href="#" class="text-blue-600 hover:text-blue-800">阅读更多</a>
-                                    </div>
-                                </div>
-                            </article>
-                        </div>
-                    </main>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 第三页 - 关于和页脚 -->
-    <section id="about-section" class="page-section">
-        <div class="section-content">
-            <!-- 关于我 -->
-            <div id="about" class="min-h-screen flex items-center bg-white">
-                <div class="container mx-auto px-4">
-                    <h2 class="text-3xl font-bold text-center mb-8">关于我</h2>
-                    <div class="max-w-3xl mx-auto">
-                        <div class="flex items-center justify-center mb-8">
-                            <div class="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-5xl">
-                                <iconify-icon icon="carbon:user-avatar"></iconify-icon>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 text-center mb-8">
-                            我是一名全栈开发工程师，热衷于探索新技术和创造有价值的项目。
-                            擅长Python、JavaScript、Java等多种编程语言，有丰富的实战经验。
-                        </p>
-                        <div class="flex justify-center space-x-4">
-                            <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">
-                                <iconify-icon icon="carbon:logo-github" width="24"></iconify-icon>
-                            </a>
-                            <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">
-                                <iconify-icon icon="carbon:email" width="24"></iconify-icon>
-                            </a>
-                            <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">
-                                <iconify-icon icon="carbon:logo-linkedin" width="24"></iconify-icon>
-                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- 页脚 -->
-            <footer class="bg-gray-800 text-white py-8">
-                <div class="container mx-auto px-4 text-center">
-                    <p class="mb-4">&copy; 2024 个人作品集. All rights reserved.</p>
-                    <div class="flex justify-center space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">联系我</a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">简历</a>
-                    </div>
-                </div>
-            </footer>
+            <div class="main-section-content content-fade">
+                <!-- 内容将在这里加载 -->
         </div>
     </section>
+
+        <!-- 关于页面 -->
+        <section id="about" class="main-page-section">
+            <div class="main-section-background bg-gradient-to-br from-blue-50 to-purple-50"></div>
+            <div class="main-section-loading">
+                <div class="main-loading-container">
+                    <div class="main-gear-container">
+                        <div class="main-gear">
+                            <div class="main-gear-inner">
+                                <iconify-icon icon="ri:user-line"></iconify-icon>
+                            </div>
+                            <div class="main-gear-teeth">
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                                <div class="main-gear-tooth"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-section-content content-fade">
+                <!-- 内容将在这里加载 -->
+                    </div>
+        </section>
+        </div>
 </main> 
+
+<script>
+    // 立即执行的函数表达式(IIFE)来初始化Main组件
+    (function initMainComponent() {
+        // 获取组件元素
+        const mainScroll = document.getElementById('main-scroll');
+        const subAppContainer = document.getElementById('sub-app-container');
+        const sections = ['home', 'skills', 'projects', 'about'];
+        const indicators = document.querySelectorAll('.main-indicator-dot');
+
+        // 当前页面索引
+        let currentSectionIndex = 0;
+        let isScrolling = false;
+
+        // 延迟函数
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        // 加载子组件
+        async function loadComponent(id) {
+            try {
+                const section = document.getElementById(id);
+                if (!section) return false;
+
+                const content = section.querySelector('.main-section-content');
+                const sectionLoading = section.querySelector('.main-section-loading');
+                
+                if (!content || !sectionLoading) return false;
+
+                // 1. 确保内容不可见，显示loading
+                content.classList.remove('loaded');
+                sectionLoading.classList.remove('hidden');
+
+                const startTime = Date.now();
+
+                // 2. 获取内容
+                const response = await fetch(`components/pages/${id}.html`);
+                const html = await response.text();
+                
+                // 3. 使用DOMParser解析HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // 4. 提取脚本内容
+                const scripts = doc.getElementsByTagName('script');
+                const scriptContents = Array.from(scripts).map(script => script.textContent);
+                
+                // 5. 更新内容
+                content.innerHTML = html;
+                
+                // 6. 执行脚本
+                scriptContents.forEach(scriptContent => {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptContent;
+                    document.body.appendChild(newScript);
+                });
+                
+                // 7. 确保最小loading时间
+                const elapsedTime = Date.now() - startTime;
+                const minLoadingTime = 500;
+
+                if (elapsedTime < minLoadingTime) {
+                    await new Promise(resolve => setTimeout(resolve, minLoadingTime - elapsedTime));
+                }
+                
+                // 8. 隐藏loading
+                sectionLoading.classList.add('hidden');
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // 9. 显示内容
+                content.classList.add('loaded');
+                
+                return true;
+            } catch (error) {
+                console.error(`Error loading component ${id}:`, error);
+                return false;
+            }
+        }
+
+        // 初始化加载所有组件
+        let isLoading = false;
+
+        async function initComponents() {
+            if (isLoading) {
+                return;
+            }
+
+            try {
+                isLoading = true;
+                
+                const homeSuccess = await loadComponent('home');
+                
+                if (!homeSuccess) {
+                    return;
+                }
+
+                // 确认home已完全加载
+                const homeContent = document.querySelector('#home .main-section-content');
+                if (!homeContent || !homeContent.classList.contains('loaded')) {
+                    return;
+                }
+
+                // 等待过渡时间 - 减少到30ms
+                await new Promise(resolve => setTimeout(resolve, 30));
+
+                // 依次加载其他页面
+                const otherSections = sections.filter(id => id !== 'home');
+                
+                for (const id of otherSections) {
+                    const success = await loadComponent(id);
+                    
+                    if (!success) {
+                        continue;
+                    }
+                    
+                    if (id !== otherSections[otherSections.length - 1]) {
+                        // 减少页面间的等待时间到30ms
+                        await new Promise(resolve => setTimeout(resolve, 30));
+                    }
+                }
+            } catch (error) {
+                // 错误处理
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        // 切换页面
+        async function switchSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                // 如果是首页，直接切换
+                if (sectionId === 'home') {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                    updateUI(sectionId);
+                    history.pushState({ section: sectionId }, '', `#${sectionId}`);
+                    return;
+                }
+
+                // 如果内容还没加载，先加载内容
+                const content = section.querySelector('.main-section-content');
+                if (content && !content.classList.contains('loaded')) {
+                    await loadComponent(sectionId);
+                }
+                
+                section.scrollIntoView({ behavior: 'smooth' });
+                updateUI(sectionId);
+                history.pushState({ section: sectionId }, '', `#${sectionId}`);
+            }
+        }
+
+        // 更新UI状态
+        function updateUI(sectionId) {
+            // 更新指示器状态
+            indicators.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-section') === sectionId) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        // 处理滚动事件
+        mainScroll.addEventListener('scroll', () => {
+            if (!isScrolling) {
+                isScrolling = true;
+                
+                // 获取当前滚动位置最接近的section
+                let closestSection = null;
+                let closestDistance = Infinity;
+                
+                sections.forEach(id => {
+                    const section = document.getElementById(id);
+                    if (section) {
+                        const rect = section.getBoundingClientRect();
+                        const distance = Math.abs(rect.top);
+                        if (distance < closestDistance) {
+                            closestDistance = distance;
+                            closestSection = section;
+                        }
+                    }
+                });
+
+                if (closestSection) {
+                    const sectionId = closestSection.id;
+                    updateUI(sectionId);
+                    history.replaceState({ section: sectionId }, '', `#${sectionId}`);
+                }
+
+                setTimeout(() => {
+                    isScrolling = false;
+                }, 100);
+            }
+        });
+
+        // 监听指示器点击
+        indicators.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const section = dot.getAttribute('data-section');
+                switchSection(section);
+            });
+        });
+
+        // 监听暗色模式变化
+        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleDarkModeChange = (e) => {
+            document.body.classList.toggle('dark-mode', e.matches);
+            const backgrounds = document.querySelectorAll('.main-section-background');
+            backgrounds.forEach(background => {
+                if (e.matches) {
+                    background.classList.remove('from-blue-50', 'to-indigo-50', 'from-gray-50', 'to-blue-50', 'from-indigo-50', 'to-purple-50');
+                    background.classList.add('from-gray-900', 'to-indigo-900');
+                } else {
+                    background.classList.remove('from-gray-900', 'to-indigo-900');
+                    background.classList.add('from-blue-50', 'to-indigo-50');
+                }
+            });
+        };
+        
+        darkModeMediaQuery.addListener(handleDarkModeChange);
+        handleDarkModeChange(darkModeMediaQuery);
+
+        // 处理浏览器前进/后退
+        window.addEventListener('popstate', (e) => {
+            const section = e.state?.section || 'home';
+            switchSection(section);
+        });
+
+        // 初始化
+        initComponents().then(() => {
+            // 初始化完成后，确保显示首页
+            const hash = window.location.hash.slice(1) || 'home';
+            if (hash === 'home') {
+                const homeSection = document.getElementById('home');
+                if (homeSection) {
+                    homeSection.scrollIntoView({ behavior: 'smooth' });
+                    updateUI('home');
+                }
+            } else {
+                switchSection(hash);
+            }
+        });
+
+        // 清理函数
+        return () => {
+            darkModeMediaQuery.removeListener(handleDarkModeChange);
+            mainScroll.removeEventListener('scroll');
+            indicators.forEach(dot => {
+                dot.removeEventListener('click');
+            });
+            window.removeEventListener('popstate');
+        };
+    })();
+</script>
+
+<!-- 添加Iconify CDN -->
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
