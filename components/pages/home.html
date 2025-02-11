@@ -510,7 +510,15 @@
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-                const response = await fetch(path, {
+                // 根据频道ID获取对应的路径
+                const channelPaths = {
+                    1: '/components/channels/channel1/index.html',
+                    2: '/components/channels/channel2/index.html',
+                    3: '/components/channels/channel3/index.html',
+                    4: '/components/channels/channel4/index.html'
+                };
+
+                const response = await fetch(channelPaths[channelId], {
                     signal: controller.signal
                 });
                 clearTimeout(timeoutId);
