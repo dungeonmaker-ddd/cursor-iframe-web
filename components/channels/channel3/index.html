@@ -129,13 +129,62 @@
         .project-card:nth-child(4) { animation-delay: 0.3s; }
     </style>
 
+    <script>
+        // 获取绝对URL的函数
+        const getAbsoluteUrl = (function() {
+            var a;
+            return function(url) {
+                if(!a) a = document.createElement('a');
+                a.href = url;
+                return a.href;
+            };
+        })();
+
+        // 获取图片URL
+        const getImageUrl = () => {
+            const relativePath = './assets/images/default-project.svg';
+            return getAbsoluteUrl(relativePath);
+        };
+
+        // 页面加载完成后设置图片路径
+        window.addEventListener('DOMContentLoaded', () => {
+            const imageUrl = getImageUrl();
+            console.log('Image URL:', imageUrl);
+            document.querySelectorAll('.project-image img').forEach(img => {
+                img.src = imageUrl;
+            });
+        });
+    </script>
+
     <h2 class="projects-title">项目展示</h2>
     
     <div class="projects-grid">
         <!-- 项目1 -->
         <div class="project-card">
             <div class="project-image">
-                <img src="https://via.placeholder.com/300x180/2a2a2a/666666" alt="项目预览">
+                <svg width="300" height="180" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 背景 -->
+                    <rect width="100%" height="100%" fill="#2a2a2a"/>
+                    
+                    <!-- 装饰性网格背景 -->
+                    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                        <rect width="30" height="30" fill="none" stroke="#333333" stroke-width="0.5"/>
+                    </pattern>
+                    <rect width="100%" height="100%" fill="url(#grid)"/>
+                    
+                    <!-- 中心图标 - 使用 MDI 风格的图标路径 -->
+                    <path d="M19,19H5V5H19M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M13.96,12.29L11.21,15.83L9.25,13.47L6.5,17H17.5L13.96,12.29Z" 
+                          transform="translate(125,65) scale(2.5)" 
+                          fill="#666666"/>
+                    
+                    <!-- 文本标签 -->
+                    <text x="50%" y="75%" font-family="Arial" font-size="14" fill="#666666" text-anchor="middle">
+                        项目预览图片
+                    </text>
+                    
+                    <!-- 底部装饰线 -->
+                    <line x1="100" y1="140" x2="200" y2="140" stroke="#444444" stroke-width="1"/>
+                </svg>
             </div>
             <div class="project-content">
                 <h3 class="project-title">智能电视UI框架</h3>
@@ -163,7 +212,29 @@
         <!-- 项目2 -->
         <div class="project-card">
             <div class="project-image">
-                <img src="https://via.placeholder.com/300x180/2a2a2a/666666" alt="项目预览">
+                <svg width="300" height="180" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 背景 -->
+                    <rect width="100%" height="100%" fill="#2a2a2a"/>
+                    
+                    <!-- 装饰性网格背景 -->
+                    <pattern id="grid2" width="30" height="30" patternUnits="userSpaceOnUse">
+                        <rect width="30" height="30" fill="none" stroke="#333333" stroke-width="0.5"/>
+                    </pattern>
+                    <rect width="100%" height="100%" fill="url(#grid2)"/>
+                    
+                    <!-- 中心图标 - 使用 MDI 风格的图标路径 -->
+                    <path d="M19,19H5V5H19M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M13.96,12.29L11.21,15.83L9.25,13.47L6.5,17H17.5L13.96,12.29Z" 
+                          transform="translate(125,65) scale(2.5)" 
+                          fill="#666666"/>
+                    
+                    <!-- 文本标签 -->
+                    <text x="50%" y="75%" font-family="Arial" font-size="14" fill="#666666" text-anchor="middle">
+                        项目预览图片
+                    </text>
+                    
+                    <!-- 底部装饰线 -->
+                    <line x1="100" y1="140" x2="200" y2="140" stroke="#444444" stroke-width="1"/>
+                </svg>
             </div>
             <div class="project-content">
                 <h3 class="project-title">AI图像处理工具</h3>
@@ -191,7 +262,29 @@
         <!-- 项目3 -->
         <div class="project-card">
             <div class="project-image">
-                <img src="https://via.placeholder.com/300x180/2a2a2a/666666" alt="项目预览">
+                <svg width="300" height="180" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 背景 -->
+                    <rect width="100%" height="100%" fill="#2a2a2a"/>
+                    
+                    <!-- 装饰性网格背景 -->
+                    <pattern id="grid3" width="30" height="30" patternUnits="userSpaceOnUse">
+                        <rect width="30" height="30" fill="none" stroke="#333333" stroke-width="0.5"/>
+                    </pattern>
+                    <rect width="100%" height="100%" fill="url(#grid3)"/>
+                    
+                    <!-- 中心图标 - 使用 MDI 风格的图标路径 -->
+                    <path d="M19,19H5V5H19M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M13.96,12.29L11.21,15.83L9.25,13.47L6.5,17H17.5L13.96,12.29Z" 
+                          transform="translate(125,65) scale(2.5)" 
+                          fill="#666666"/>
+                    
+                    <!-- 文本标签 -->
+                    <text x="50%" y="75%" font-family="Arial" font-size="14" fill="#666666" text-anchor="middle">
+                        项目预览图片
+                    </text>
+                    
+                    <!-- 底部装饰线 -->
+                    <line x1="100" y1="140" x2="200" y2="140" stroke="#444444" stroke-width="1"/>
+                </svg>
             </div>
             <div class="project-content">
                 <h3 class="project-title">云原生监控平台</h3>

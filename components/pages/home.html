@@ -493,6 +493,14 @@
         let currentChannel = 1;
         let isChannelSwitching = false;
 
+        // 获取基础URL
+        const getBaseUrl = () => {
+            const url = new URL(window.location.href);
+            // 找到 components 之前的基础路径
+            const baseUrl = url.href.substring(0, url.href.indexOf('components'));
+            return baseUrl;
+        };
+
         // 加载频道内容
         async function loadChannel(channelId, path) {
             const contentElement = document.getElementById(`channel${channelId}-content`);
@@ -511,12 +519,15 @@
                 const timeoutId = setTimeout(() => controller.abort(), 5000);
 
                 // 根据频道ID获取对应的路径
+                const baseUrl = getBaseUrl();
+                console.log('Base URL:', baseUrl);
                 const channelPaths = {
-                    1: '/components/channels/channel1/index.html',
-                    2: '/components/channels/channel2/index.html',
-                    3: '/components/channels/channel3/index.html',
-                    4: '/components/channels/channel4/index.html'
+                    1: `${baseUrl}components/channels/channel1/index.html`,
+                    2: `${baseUrl}components/channels/channel2/index.html`,
+                    3: `${baseUrl}components/channels/channel3/index.html`,
+                    4: `${baseUrl}components/channels/channel4/index.html`
                 };
+                console.log('Channel Paths:', channelPaths);
 
                 const response = await fetch(channelPaths[channelId], {
                     signal: controller.signal
